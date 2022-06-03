@@ -100,7 +100,16 @@ exports.list = async (req, res) => {
 exports.get = async (req, res) => {
   try {
     const [users] = await db.execute(
-      "SELECT id,firstname,lastname,created_at,last_logged_in,email,role_id FROM users WHERE id = ? LIMIT 1",
+      `SELECT
+        id,
+        firstname,
+        lastname,
+        created_at,
+        last_logged_in,
+        email,
+        role_id
+      FROM users
+      WHERE id = ? LIMIT 1`,
       [req.params.id]
     );
     if (!users.length) return res.status(404).json({ error: "User Not Found" });
