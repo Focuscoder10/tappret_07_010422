@@ -1,69 +1,109 @@
 <template>
   <main>
     <logo-login />
-    <form @submit.prevent="register" @input.prevent="verify" novalidate>
-      <label>
-        <span>Adresse Email</span>
+    <form @submit.prevent="register" @input="verify" novalidate>
+      <div class="relative">
         <input
           type="email"
           name="email"
           placeholder="Adresse email"
           v-model="email"
+          @focus="
+            isEmailFocused = true;
+            verify();
+          "
+          @blur="
+            isEmailFocused = false;
+            verify();
+          "
+          :class="classEmail"
         />
         <transition name="fade">
           <div v-if="isEmailTooltipVisible" class="tooltip">
-            <ul>
-              <li :class="classEmail">
-                L'adresse email est
-                {{ verifyEmail ? "correcte" : "incorrecte" }}
-              </li>
-            </ul>
+            <div>
+              <ul>
+                <li :class="classEmail">
+                  L'adresse email est
+                  {{ verifyEmail ? "correcte" : "incorrecte" }}
+                </li>
+              </ul>
+            </div>
           </div>
         </transition>
-      </label>
+      </div>
 
-      <label>
-        <span>Prénom</span>
+      <div class="relative">
         <input
           type="text"
           name="firstname"
           placeholder="Prénom"
           v-model="firstname"
+          @focus="
+            isFirstNameFocused = true;
+            verify();
+          "
+          @blur="
+            isFirstNameFocused = false;
+            verify();
+          "
+          :class="classFirstName"
         />
         <transition name="fade">
-          <div v-if="isEmailTooltipVisible" class="tooltip">
-            <ul>
-              <li :class="classEmail">TODO</li>
-            </ul>
+          <div v-if="isFirstNameTooltipVisible" class="tooltip">
+            <div>
+              <ul>
+                <li :class="classFirstName">
+                  Veuillez saisir un prénom correct
+                </li>
+              </ul>
+            </div>
           </div>
         </transition>
-      </label>
+      </div>
 
-       <label>
-        <!-- <span>Nom</span> -->
+      <div class="relative">
         <input
           type="text"
           name="lastname"
           placeholder="Nom"
           v-model="lastname"
+          @focus="
+            isLastNameFocused = true;
+            verify();
+          "
+          @blur="
+            isLastNameFocused = false;
+            verify();
+          "
+          :class="classLastName"
         />
         <transition name="fade">
-          <div v-if="isEmailTooltipVisible" class="tooltip">
-            <ul>
-              <li :class="classEmail">TODO</li>
-            </ul>
+          <div v-if="isLastNameTooltipVisible" class="tooltip">
+            <div>
+              <ul>
+                <li :class="classLastName">Veuillez saisir un nom correct</li>
+              </ul>
+            </div>
           </div>
         </transition>
-      </label>
+      </div>
 
-      <label>
-        <span>Mot de passe</span>
+      <div class="relative">
         <div class="eyed">
           <input
             :type="visible ? 'text' : 'password'"
             name="password"
             placeholder="Mot de passe"
             v-model="password"
+            @focus="
+              isPasswordFocused = true;
+              verify();
+            "
+            @blur="
+              isPasswordFocused = false;
+              verify();
+            "
+            :class="classPassword"
           />
           <button @click="visible = !visible">
             <i v-if="visible" class="fas fa-eye-slash"></i>
@@ -72,30 +112,35 @@
         </div>
         <transition name="fade">
           <div v-if="isPasswordTooltipVisible" class="tooltip">
-            <div>Le mot de passe doit contenir&nbsp;:</div>
-            <ul>
-              <li :class="classMin">{{ constains.min }} caractères minimum</li>
-              <li v-if="constains.bothcase" :class="classCase">
-                Lettres majuscules et minuscules
-              </li>
-              <li v-if="constains.digits" :class="classDigits">
-                Au moins un chiffre
-              </li>
-              <li v-if="constains.symbols" :class="classSymbols">
-                Au moins un caractère spécial
-              </li>
-            </ul>
+            <div>
+              <div>Le mot de passe doit contenir&nbsp;:</div>
+              <ul>
+                <li :class="classMin">
+                  {{ constains.min }} caractères minimum
+                </li>
+                <li v-if="constains.bothcase" :class="classCase">
+                  Lettres majuscules et minuscules
+                </li>
+                <li v-if="constains.digits" :class="classDigits">
+                  Au moins un chiffre
+                </li>
+                <li v-if="constains.symbols" :class="classSymbols">
+                  Au moins un caractère spécial
+                </li>
+              </ul>
+            </div>
           </div>
         </transition>
-      </label>
+      </div>
 
       <div class="contain-button-register">
-        <button class="btn" type="submit" :disabled="!isValidPassword">
+        <button class="btn" type="submit" :disabled="!isValidRegister">
           S'inscrire
         </button>
       </div>
-      <div>
-        Déjà un compte <a class="btn small tertiary" href="#">Se connecter</a>
+      <div class="backup">
+        Déjà un compte&nbsp;?
+        <router-link to="/login">Se connecter</router-link>
       </div>
     </form>
   </main>
@@ -103,7 +148,7 @@
 
 <script>
 import passwordValidator from "password-validator";
-import LogoLogin from "../components/LogoLogin.vue";
+import LogoLogin from "@/components/LogoLogin.vue";
 
 const constains = {
   min: 8,
@@ -121,6 +166,8 @@ function getStatus(bool) {
 
 const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+const nameRegex = /^[\p{L} ,.'-]+$/u;
 
 passValidator.is().min(constains.min).is().max(constains.max);
 
@@ -147,6 +194,12 @@ export default {
       visible: false,
       isPasswordTooltipVisible: false,
       isEmailTooltipVisible: false,
+      isFirstNameTooltipVisible: false,
+      isLastNameTooltipVisible: false,
+      isEmailFocused: false,
+      isFirstNameFocused: false,
+      isLastNameFocused: false,
+      isPasswordFocused: false,
       constains,
       details: [],
     };
@@ -159,11 +212,24 @@ export default {
       return getStatus(this.verifyEmail);
     },
 
+    verifyFirstName() {
+      return nameRegex.test(this.firstname);
+    },
+    classFirstName() {
+      return getStatus(this.verifyFirstName);
+    },
+
+    verifyLastName() {
+      return nameRegex.test(this.lastname);
+    },
+    classLastName() {
+      return getStatus(this.verifyLastName);
+    },
+
     verifyMin() {
       return this.fieldCheck("min");
     },
     classMin() {
-      if (!this.password) return;
       return getStatus(this.verifyMin);
     },
 
@@ -171,7 +237,6 @@ export default {
       return this.fieldCheck("lowercase") && this.fieldCheck("uppercase");
     },
     classCase() {
-      if (!this.password) return;
       return getStatus(this.verifyCase);
     },
 
@@ -179,7 +244,6 @@ export default {
       return this.fieldCheck("digits");
     },
     classDigits() {
-      if (!this.password) return;
       return getStatus(this.verifyDigits);
     },
 
@@ -187,19 +251,28 @@ export default {
       return this.fieldCheck("symbols");
     },
     classSymbols() {
-      if (!this.password) return;
       return getStatus(this.verifySymbols);
     },
 
-    isValidPassword() {
+    verifyPassword() {
       return (
-        this.email &&
-        this.password &&
-        this.verifyEmail &&
+        this.password.length > 0 &&
         this.verifyMin &&
         this.verifyCase &&
         this.verifyDigits &&
         this.verifySymbols
+      );
+    },
+    classPassword() {
+      return getStatus(this.verifyPassword);
+    },
+
+    isValidRegister() {
+      return (
+        this.verifyEmail &&
+        this.verifyFirstName &&
+        this.verifyLastName &&
+        this.verifyPassword
       );
     },
   },
@@ -208,12 +281,17 @@ export default {
       return !this.details.some((e) => e.validation === field);
     },
     verify() {
-      this.isPasswordTooltipVisible = this.password.length > 0;
-      this.isEmailTooltipVisible = this.email.length > 0;
+      this.isEmailTooltipVisible = this.email.length > 0 && this.isEmailFocused;
+      this.isFirstNameTooltipVisible =
+        this.firstname.length > 0 && this.isFirstNameFocused;
+      this.isLastNameTooltipVisible =
+        this.lastname.length > 0 && this.isLastNameFocused;
+      this.isPasswordTooltipVisible =
+        this.password.length > 0 && this.isPasswordFocused;
       this.details = passValidator.validate(this.password, { details: true });
     },
     register() {
-      console.log(this.isValidPassword);
+      console.log(this.isValidRegister);
       // TODO
     },
   },
@@ -221,105 +299,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "./src/assets/scss/_variables.scss";
-
-form {
-  margin-top: 3rem;
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-  gap: 1rem;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 450px;
-  label,
-  .eyed {
-    display: flex;
-    flex-direction: column;
-  }
-  label {
-    span {
-      margin-bottom: 0.5rem;
-    }
-  }
-  button[type="submit"]:disabled {
-    opacity: 0.5;
-  }
-  .eyed {
-    position: relative;
-    button {
-      position: absolute;
-      right: 0;
-      height: 100%;
-      aspect-ratio: 1/1;
-      background: none;
-      border: none;
-    }
-  }
-  input {
-    text-align: center;
-    border: 1px solid #4e5166;
-    padding: 0.7rem;
-    border-radius: 0.5rem;
-    &[name="password"] {
-      position: relative;
-      padding-right: 2.5rem;
-    }
-  }
-  .contain-button-register {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    > * {
-      flex: 1;
-      text-align: center;
-    }
-  }
-}
-
-.tooltip {
-  margin-top: 0.5rem;
-  > div {
-    font-weight: bold;
-  }
-  > ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    > li {
-      display: flex;
-      align-items: center;
-      &::before {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        width: 1rem;
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        content: "\f111";
-        margin-right: 0.5rem;
-      }
-      &.success {
-        color: green;
-        &::before {
-          content: "\f058";
-        }
-      }
-      &.error {
-        color: $primary;
-        &::before {
-          content: "\f057";
-        }
-      }
-    }
-  }
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
+@import "@/assets/scss/_variables.scss";
+@import "@/assets/scss/_signinup.scss";
 </style>

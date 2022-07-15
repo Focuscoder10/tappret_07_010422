@@ -14,5 +14,8 @@ footer {
   justify-content: center;
   flex-wrap: wrap;
   text-align: center;
+  a {
+    text-decoration: none;
+  }
 }
 </style>

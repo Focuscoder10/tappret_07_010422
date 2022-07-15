@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav-block v-if="isLoginForm()" />
+    <!-- <nav-block v-if="isLoginForm()" /> -->
     <router-view />
     <footer-block />
   </div>
@@ -8,11 +8,11 @@
 
 <script>
 import FooterBlock from "./components/FooterBlock.vue";
-import NavBlock from "./components/NavBlock.vue";
+// import NavBlock from "./components/NavBlock.vue";
 export default {
   components: {
     FooterBlock,
-    NavBlock,
+    // NavBlock,
   },
   methods: {
     isLoginForm() {
@@ -31,6 +31,7 @@ body {
   color: $tertiary;
 }
 
+
 *,
 ::after,
 ::before {
@@ -41,7 +42,6 @@ body {
 }
 
 a {
-  text-decoration: none;
   color: inherit;
   transition: color 0.2s;
   &:hover {
@@ -49,13 +49,69 @@ a {
   }
 }
 
+button,
 input,
 textarea,
 select {
   outline: transparent solid 2px;
   transition: outline-color 0.2s;
   &:focus {
-    outline-color: $primary;
+    outline-color: rgb($tertiary, 0.5);
+  }
+}
+
+$border-size: 2px;
+
+input,
+textarea,
+select {
+  text-align: center;
+  border: $border-size solid $tertiary;
+  padding: 0.7rem;
+  border-radius: 0.5rem;
+  &[name="password"] {
+    position: relative;
+  }
+  &.success {
+    outline-color: rgb(green, 0.5);
+  }
+  &.error {
+    outline-color: rgb($primary, 0.5);
+  }
+}
+
+.container {
+  max-width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.eyed {
+  display: inline-block;
+  position: relative;
+  button {
+    position: absolute;
+    width: 2.5rem;
+    top: $border-size;
+    right: $border-size;
+    bottom: $border-size;
+    border-top-right-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+    background-color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    i {
+      transition: all 0.2s ;
+    }
+    &:hover,
+    &:focus {
+      i {
+        transform: scale(1.5);
+        color: $primary;
+      }
+    }
   }
 }
 
@@ -74,7 +130,8 @@ select {
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
-  &:hover {
+  &:hover,
+  &:focus {
     color: white;
     box-shadow: $shadow;
     transform: translateY(-3px);
