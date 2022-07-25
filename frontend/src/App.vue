@@ -23,6 +23,7 @@ export default {
 </script>
 
 <style lang="scss">
+@use "sass:math";
 @import "./src/assets/scss/_variables.scss";
 
 body {
@@ -30,7 +31,6 @@ body {
   margin: 0;
   color: $tertiary;
 }
-
 
 *,
 ::after,
@@ -65,8 +65,7 @@ $border-size: 2px;
 input,
 textarea,
 select {
-  text-align: center;
-  border: $border-size solid $tertiary;
+  border: $border-size solid lighten($tertiary,50%);
   padding: 0.7rem;
   border-radius: 0.5rem;
   &[name="password"] {
@@ -81,11 +80,14 @@ select {
 }
 
 .container {
-  max-width: 1024px;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
+  &.with-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
-
 
 .eyed {
   display: inline-block;
@@ -103,7 +105,7 @@ select {
     outline: none;
     cursor: pointer;
     i {
-      transition: all 0.2s ;
+      transition: all 0.2s;
     }
     &:hover,
     &:focus {
@@ -120,7 +122,20 @@ select {
   display: flex;
   flex-direction: column;
 }
-
+.img-profil {
+  $size: 40px;
+  height: $size;
+  width: $size;
+  min-width: $size;
+  min-height: $size;
+  border-radius: math.div($size, 2);
+  overflow: hidden;
+  img {
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
+  }
+}
 .btn {
   padding: 0.5rem 1.2rem;
   background-color: darken($primary, 10%);

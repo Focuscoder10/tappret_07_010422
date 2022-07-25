@@ -23,10 +23,10 @@
 import LogoLogin from "@/components/LogoLogin.vue";
 export default {
   components: { LogoLogin },
-  data(){
-    return{
-      show: true
-    }
+  data() {
+    return {
+      show: false,
+    };
   },
   methods: {
     toggleMenu() {
@@ -69,23 +69,22 @@ nav {
     li > i {
       font-size: 2rem;
       width: 2rem;
-      margin-right: .3rem;
+      margin-right: 0.3rem;
       // margin-left: .3rem;
     }
   }
 }
 @media screen and (min-width: $bp-md) {
- .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  .navbar {
-    
-  > i {
-    display: none;
-
-  }}
-  .menu {
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .navbar {
+      > i {
+        display: none;
+      }
+    }
+    .menu {
       flex-direction: row;
       align-items: center;
       padding: 0;
@@ -94,7 +93,6 @@ nav {
       display: inline-flex;
       align-items: center;
     }
-  } 
+  }
 }
-
 </style>

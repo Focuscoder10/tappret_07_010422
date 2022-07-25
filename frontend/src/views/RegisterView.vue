@@ -278,7 +278,7 @@ export default {
   },
   methods: {
     fieldCheck(field) {
-      return !this.details.some((e) => e.validation === field);
+      return !this.details.some(e => e.validation === field);
     },
     verify() {
       this.isEmailTooltipVisible = this.email.length > 0 && this.isEmailFocused;

@@ -27,7 +27,7 @@
           </div>
           <div class="footer-group-icon">
             <div class="footer-left-icon">
-              <i class="fa-solid fa-comment-dots"></i>
+              <i @click="addComment" class="fa-solid fa-comment-dots"></i>
               <i class="fa-solid fa-thumbs-up"></i>
             </div>
             <div class="footer-right-icon">
@@ -45,6 +45,12 @@
 import NavbarNavigation from "@/components/NavbarNavigation.vue";
 export default {
   components: { NavbarNavigation },
+  methods: {
+    addComment(e) {
+      console.log(e);
+      this.$router.push({ path: "/comments" });
+    },
+  },
 };
 </script>
 
@@ -58,8 +64,8 @@ export default {
   .post-card {
     // border: 1px solid black;
     border-radius: 1rem;
-    box-shadow: $secondary() 0px 4px 16px,
-      rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px;
+    box-shadow: $secondary() 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px,
+      rgba(17, 17, 26, 0.1) 0px 16px 56px;
     .hearder-post-card {
       .title-name-post-card {
         > .title-post {

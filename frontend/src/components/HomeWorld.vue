@@ -1,18 +1,14 @@
 <template>
-  <div id="Button">
-    
-  </div>
+  <div id="Button"></div>
 </template>
 
 <script>
 export default {
   name: HomeWorld,
   props: {
-    msg: String
-  }
-  
-  
-}
+    msg: String,
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

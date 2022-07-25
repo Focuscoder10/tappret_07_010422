@@ -1,5 +1,5 @@
 <template>
-  <div :class="type==='navbar' ? 'logo navbar' : 'logo'">
+  <div :class="type === 'navbar' ? 'logo navbar' : 'logo'">
     <svg
       version="1.2"
       baseProfile="tiny"
@@ -104,18 +104,18 @@
 export default {
   props: {
     type: String,
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-@import "./src/assets/scss/_variables.scss";
+@import "@/assets/scss/_mixins.scss";
+@import "@/assets/scss/_variables.scss";
 .logo {
-  display: flex;
+  @include flex-justi-align;
   flex-direction: column;
   text-align: center;
-  align-items: center;
-  justify-content: center;
+
   svg {
     &:first-child {
       max-height: 12rem;
@@ -130,23 +130,23 @@ export default {
       }
     }
   }
-   &.navbar{
+  &.navbar {
     flex-direction: row;
     svg {
-    &:first-child {
-      width: 2.34rem;
-      g {
-        fill: white;
+      &:first-child {
+        width: 2.34rem;
+        g {
+          fill: white;
+        }
+      }
+      &:last-child {
+        max-height: 2rem;
+        padding-top: 0.3rem;
+        g {
+          fill: white;
+        }
       }
     }
-    &:last-child {
-      max-height: 2rem;
-      padding-top: .3rem;
-      g {
-        fill: white;
-      }
-    }
-  }
   }
 }
 @media screen and (min-width: 768px) {
