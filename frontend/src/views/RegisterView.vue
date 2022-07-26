@@ -1,7 +1,7 @@
 <template>
   <main>
     <logo-login />
-    <form @submit.prevent="register" @input="verify" novalidate>
+    <form v-if="!isRegistered" @submit.prevent="register" @input="verify" novalidate>
       <div class="relative">
         <input
           type="email"
@@ -143,13 +143,14 @@
         <router-link to="/login">Se connecter</router-link>
       </div>
     </form>
+    <alert-message v-else message="Votre compte a bien été crée"/>
   </main>
 </template>
 
 <script>
 import passwordValidator from "password-validator";
 import LogoLogin from "@/components/LogoLogin.vue";
-
+import AlertMessage from "@/components/AlertMessage.vue";
 const constains = {
   min: 8,
   max: 64,
@@ -184,7 +185,7 @@ if (constains.symbols) {
 }
 
 export default {
-  components: { LogoLogin },
+  components: { LogoLogin, AlertMessage },
   data() {
     return {
       email: "",
@@ -200,6 +201,7 @@ export default {
       isFirstNameFocused: false,
       isLastNameFocused: false,
       isPasswordFocused: false,
+      isRegistered: false,
       constains,
       details: [],
     };
@@ -291,8 +293,25 @@ export default {
       this.details = passValidator.validate(this.password, { details: true });
     },
     register() {
-      console.log(this.isValidRegister);
-      // TODO
+      if (!this.isValidRegister) return;
+      const data = {
+        email: this.email,
+        password: this.password,
+        firstname: this.firstname,
+        lastname: this.lastname,
+      };
+      fetch("http://localhost:3000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }).then(res => {
+        if (res.status === 201)
+        this.isRegistered = true 
+        });
+      console.log(data);
     },
   },
 };
