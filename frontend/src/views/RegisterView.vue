@@ -1,7 +1,12 @@
 <template>
   <main>
     <logo-login />
-    <form v-if="!isRegistered" @submit.prevent="register" @input="verify" novalidate>
+    <form
+      v-if="!isRegistered"
+      @submit.prevent="register"
+      @input="verify"
+      novalidate
+    >
       <div class="relative">
         <input
           type="email"
@@ -143,7 +148,13 @@
         <router-link to="/login">Se connecter</router-link>
       </div>
     </form>
-    <alert-message v-else message="Votre compte a bien été crée"/>
+    <transition name="fade">
+      <alert-message
+        v-if="isRegistered || alert.type"
+        :message="alert.message"
+        :type="alert.type"
+      />
+    </transition>
   </main>
 </template>
 
@@ -204,6 +215,10 @@ export default {
       isRegistered: false,
       constains,
       details: [],
+      alert: {
+        message: "",
+        type: "",
+      },
     };
   },
   computed: {
@@ -307,11 +322,17 @@ export default {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      }).then(res => {
-        if (res.status === 201)
-        this.isRegistered = true 
-        });
-      console.log(data);
+      }).then(async res => {
+        const data = await res.json();
+        if (res.status !== 201) {
+          this.alert.message = data.error;
+          this.alert.type = "error";
+          return;
+        }
+        this.alert.message = "Votre compte a bien été crée";
+        this.alert.type = "success";
+        this.isRegistered = true;
+      });
     },
   },
 };

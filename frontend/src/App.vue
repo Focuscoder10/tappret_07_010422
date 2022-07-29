@@ -65,7 +65,7 @@ $border-size: 2px;
 input,
 textarea,
 select {
-  border: $border-size solid lighten($tertiary,50%);
+  border: $border-size solid lighten($tertiary, 50%);
   padding: 0.7rem;
   border-radius: 0.5rem;
   &[name="password"] {
@@ -107,8 +107,7 @@ select {
     i {
       transition: all 0.2s;
     }
-    &:hover,
-    &:focus {
+    &:hover {
       i {
         transform: scale(1.5);
         color: $primary;

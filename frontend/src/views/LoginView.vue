@@ -54,42 +54,27 @@
             <i v-else class="fas fa-eye"></i>
           </button>
         </div>
-        <transition name="fade">
-          <div v-if="isPasswordTooltipVisible" class="tooltip">
-            <div>
-              <div>Le mot de passe doit contenir&nbsp;:</div>
-              <ul>
-                <li :class="classMin">
-                  {{ constains.min }} caractères minimum
-                </li>
-                <li v-if="constains.bothcase" :class="classCase">
-                  Lettres majuscules et minuscules
-                </li>
-                <li v-if="constains.digits" :class="classDigits">
-                  Au moins un chiffre
-                </li>
-                <li v-if="constains.symbols" :class="classSymbols">
-                  Au moins un caractère spécial
-                </li>
-              </ul>
-            </div>
-          </div>
-        </transition>
       </div>
 
       <div class="contain-button-register">
-        <button class="btn" type="submit">Se connecter</button>
+        <button class="btn" type="submit" :disabled="!isValidLogin">
+          Se connecter
+        </button>
       </div>
       <div class="backup">
         Créer un compte&nbsp;?
         <router-link to="/register">S'inscrire</router-link>
       </div>
     </form>
+    <transition name="fade">
+      <alert-message v-if="message" :message="message" type="error" />
+    </transition>
   </main>
 </template>
 
 <script>
 import LogoLogin from "@/components/LogoLogin.vue";
+import AlertMessage from "@/components/AlertMessage.vue";
 
 function getStatus(bool) {
   return bool ? "success" : "error";
@@ -99,11 +84,12 @@ const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
-  components: { LogoLogin },
+  components: { LogoLogin, AlertMessage },
   data() {
     return {
       email: "",
       password: "",
+      message: "",
       visible: false,
       isEmailTooltipVisible: false,
       isEmailFocused: false,
@@ -118,19 +104,41 @@ export default {
       return getStatus(this.verifyEmail);
     },
 
+    verifyPassword() {
+      return this.password.length > 0;
+    },
+    classPassword() {
+      return getStatus(this.verifyPassword);
+    },
+
     isValidLogin() {
-      return this.verifyEmail;
+      return this.verifyEmail && this.verifyPassword;
     },
   },
   methods: {
     verify() {
       this.isEmailTooltipVisible = this.email.length > 0 && this.isEmailFocused;
-      this.isPasswordTooltipVisible =
-        this.password.length > 0 && this.isPasswordFocused;
     },
     login() {
-      console.log(this.isValidLogin);
-      // TODO
+      if (!this.isValidLogin) return;
+      const data = {
+        email: this.email,
+        password: this.password,
+      };
+      fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }).then(async res => {
+        const data = await res.json();
+        if (res.status !== 200) {
+          this.message = data.error;
+          return;
+        }
+      });
     },
   },
 };
