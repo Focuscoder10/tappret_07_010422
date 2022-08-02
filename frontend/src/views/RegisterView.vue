@@ -315,12 +315,8 @@ export default {
         firstname: this.firstname,
         lastname: this.lastname,
       };
-      fetch("http://localhost:3000/api/auth/signup", {
+      this.fetch("/auth/signup", {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(data),
       }).then(async res => {
         const data = await res.json();

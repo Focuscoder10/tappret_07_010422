@@ -2,14 +2,14 @@
   <main>
     <navbar-navigation />
     <div class="container-post container">
-      <div class="post-card" v-for="i of [1, 2, 3]" :key="i">
+      <div class="post-card" v-for="post of posts" :key="post.id">
         <div class="hearder-post-card">
           <div class="post-card-avatar"></div>
           <div class="title-name-post-card">
-            <div class="title-post">Mes dernières vacances</div>
+            <div class="title-post">{{ post.title }}</div>
             <div class="post-name">
-              <div class="post-firstname">Morgan</div>
-              <div class="post-lastname">Tappret</div>
+              <div class="post-firstname">{{ post.author_firstname }}</div>
+              <div class="post-lastname">{{ post.author_lastname }}</div>
             </div>
           </div>
         </div>
@@ -19,10 +19,7 @@
         <div class="footer-post-card">
           <div class="text-contain">
             <span class="text-post-card">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rerum,
-              amet est. Repudiandae ratione in est id iste at minus velit
-              similique magnam quod aliquam, cumque incidunt commodi vitae
-              veritatis necessitatibus!
+              {{ post.content }}
             </span>
           </div>
           <div class="footer-group-icon">
@@ -45,12 +42,27 @@
 import NavbarNavigation from "@/components/NavbarNavigation.vue";
 export default {
   components: { NavbarNavigation },
+  data(){
+    return {
+      posts: []
+    }
+  },
   methods: {
-    addComment(e) {
-      console.log(e);
+    addComment() {
       this.$router.push({ path: "/comments" });
     },
   },
+  created () {
+    this.fetch('/posts')
+    .then(async res => {
+        const data = await res.json();
+        if (res.status !== 200) {
+          this.$router.push({ path: "/login"});
+          return;
+        }
+        this.posts = data;
+      })
+  }
 };
 </script>
 

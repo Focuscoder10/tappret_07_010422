@@ -19,7 +19,16 @@ exports.create = async (req, res) => {
 
 exports.list = async (req, res) => {
   try {
-    const [posts] = await db.query("SELECT * FROM posts");
+    const [posts] = await db.query(`
+      SELECT
+      p.*,
+      u.firstname AS author_firstname,
+      u.lastname AS author_lastname
+      FROM posts p
+      JOIN users u 
+      ON p.author_id = u.id 
+      ORDER BY p.created_at DESC
+    `);
     res.status(200).json(posts);
   } catch (e) {
     console.error(e);

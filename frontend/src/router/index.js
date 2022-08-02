@@ -34,6 +34,11 @@ const routes = [
     path: "/posts",
     name: "posts",
     component: () => import("@/views/CreatePostView.vue"),
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    component: () => import("@/views/LogoutView.vue")
   }
 ];
 
@@ -42,5 +47,16 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem('token');
+  if (authRequired && !loggedIn) {
+    next('/login');
+  }else {
+    next();
+  }
+})
 
 export default router;

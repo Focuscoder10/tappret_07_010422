@@ -125,12 +125,8 @@ export default {
         email: this.email,
         password: this.password,
       };
-      fetch("http://localhost:3000/api/auth/login", {
+      this.fetch("/auth/login", {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(data),
       }).then(async res => {
         const data = await res.json();
@@ -138,6 +134,14 @@ export default {
           this.message = data.error;
           return;
         }
+        try {
+          localStorage.setItem("token", data.token);
+          this.$store.state.token = data.token;
+        }catch(e){
+          this.message = e.message;
+          return;
+        }
+        this.$router.push({ path: "/"});
       });
     },
   },

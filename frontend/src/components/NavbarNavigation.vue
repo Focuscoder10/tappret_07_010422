@@ -11,8 +11,10 @@
           Voir votre profil
         </li>
         <li>
-          <i class="fa-solid fa-right-from-bracket"></i>
-          Déconnexion
+          <router-link to="/logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Déconnexion
+          </router-link>
         </li>
       </ul>
     </div>
