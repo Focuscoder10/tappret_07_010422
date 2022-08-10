@@ -13,8 +13,8 @@
             </div>
           </div>
         </div>
-        <div class="post-card-picture">
-          <img src="@/assets/images/beach.png" alt="" />
+        <div v-if="post.media" class="post-card-picture">
+          <img :src="$store.state.apiUrl + '/upload/' + post.media" alt="" />
         </div>
         <div class="footer-post-card">
           <div class="text-contain">
@@ -25,7 +25,8 @@
           <div class="footer-group-icon">
             <div class="footer-left-icon">
               <i @click="addComment" class="fa-solid fa-comment-dots"></i>
-              <i class="fa-solid fa-thumbs-up"></i>
+              <!-- <i class="fa-solid fa-thumbs-up"></i> -->
+              <like-add-to-post :post="post"/>
             </div>
             <div class="footer-right-icon">
               <i class="fa-solid fa-pen"></i>
@@ -35,16 +36,19 @@
         </div>
       </div>
     </div>
+    <new-post-button />
   </main>
 </template>
 
 <script>
 import NavbarNavigation from "@/components/NavbarNavigation.vue";
+import NewPostButton from "@/components/NewPostButton.vue";
+import LikeAddToPost from "@/components/LikeAddToPost.vue";
 export default {
-  components: { NavbarNavigation },
+  components: { NavbarNavigation, NewPostButton, LikeAddToPost },
   data(){
     return {
-      posts: []
+      posts: [],
     }
   },
   methods: {

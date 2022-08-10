@@ -328,6 +328,9 @@ export default {
         this.alert.message = "Votre compte a bien été crée";
         this.alert.type = "success";
         this.isRegistered = true;
+        setTimeout(() => {
+          this.$router.push({ path: "/login" });
+        }, 3000);
       });
     },
   },

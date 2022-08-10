@@ -144,8 +144,7 @@ select {
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
-  &:hover,
-  &:focus {
+  &:hover{
     color: white;
     box-shadow: $shadow;
     transform: translateY(-3px);

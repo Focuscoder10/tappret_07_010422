@@ -3,6 +3,7 @@
  */
 const express = require("express");
 const helmet = require("helmet");
+const path = require("path");
 const cors = require("./middleware/cors");
 
 const app = express();
@@ -11,11 +12,9 @@ const app = express();
  * importations des routes requises
  */
 const authRoutes = require("./routes/auth");
-const forumRoutes = require("./routes/forum");
 const postRoutes = require("./routes/post");
 const roleRoutes = require("./routes/role");
 const userRoutes = require("./routes/user");
-const topicRoutes = require("./routes/topic");
 
 /**
  * middleware de sécurité
@@ -36,11 +35,20 @@ app.use(cors);
  * définie les routers associés aux différents endpoint
  */
 app.use("/api/auth", authRoutes);
-app.use("/api/forums", forumRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/roles", roleRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/topics", topicRoutes);
+
+app.use((err, req, res, next) => {
+  res.status(400).json({ error: err.message });
+});
+
+app.use(
+  "/upload",
+  helmet.crossOriginResourcePolicy({ policy: "cross-origin" }),
+  express.static(path.join(__dirname, "upload"))
+);
+
 /**
  * exporte l'application express
  */

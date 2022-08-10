@@ -31,8 +31,8 @@ const routes = [
     component: () => import("@/views/CommentView.vue"),
   },
   {
-    path: "/posts",
-    name: "posts",
+    path: "/posts/create",
+    name: "posts-create",
     component: () => import("@/views/CreatePostView.vue"),
   },
   {

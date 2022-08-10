@@ -13,24 +13,20 @@ Vue.mixin({
           Accept: "application/json",
           "Content-Type": "application/json",
         },
+      };
+      Object.assign(obj, options);
+      if (this.$store.state.token) {
+        obj.headers.Authorization = "Bearer " + this.$store.state.token;
       }
-      if(this.$store.state.token) {
-        obj.headers.Authorization = 'Bearer ' + this.$store.state.token;
-      }
-      return fetch(this.$store.state.apiUrl + resource, Object.assign(obj, options));
+      return fetch(this.$store.state.apiUrl + this.$store.state.apiPath + resource, obj);
     },
   },
 });
 
 export default new Vuex.Store({
   state: {
-    apiUrl: "http://localhost:3000/api",
+    apiUrl: "http://localhost:3000",
+    apiPath: "/api",
     token: null,
   },
-  getters: {},
-  mutations: {
-    
-  },
-  actions: {},
-  modules: {},
 });
