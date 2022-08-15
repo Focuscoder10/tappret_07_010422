@@ -29,7 +29,12 @@ passValidator
  * function enregistrement
  */
 exports.signup = async (req, res) => {
-  if (!req.body.firstname || !req.body.lastname || !req.body.email || !req.body.password)
+  if (
+    !req.body.firstname ||
+    !req.body.lastname ||
+    !req.body.email ||
+    !req.body.password
+  )
     return res.status(400).json({ error: "Bad Request" });
   /**
    * condition si email non validé retourne erreur 400
@@ -44,7 +49,9 @@ exports.signup = async (req, res) => {
    */
   const details = passValidator.validate(req.body.password, { details: true });
   if (details.length)
-    return res.status(400).json({ error: `Invalid Password: ${details[0].message}` });
+    return res
+      .status(400)
+      .json({ error: `Invalid Password: ${details[0].message}` });
 
   try {
     /**
@@ -67,17 +74,24 @@ exports.signup = async (req, res) => {
  * function connection
  */
 exports.login = async (req, res) => {
-  if (!req.body.email || !req.body.password) return res.status(400).json({ error: "Bad Request" });
+  if (!req.body.email || !req.body.password)
+    return res.status(400).json({ error: "Bad Request" });
   try {
-    let [user] = await db.execute("SELECT * FROM users WHERE email = ? LIMIT 1", [req.body.email]);
+    let [user] = await db.execute(
+      "SELECT id,firstname,lastname,email,password FROM users WHERE email = ? LIMIT 1",
+      [req.body.email]
+    );
     if (!user.length) return res.status(401).json({ error: "Unauthorized" });
     else user = user[0];
     const valid = await bcrypt.compare(req.body.password, user.password);
+    delete user.password;
     if (!valid) return res.status(401).json({ error: "Unauthorized" });
-    await db.execute("UPDATE users SET last_logged_in = ? WHERE id = ?", [new Date(), user.id]);
+    await db.execute("UPDATE users SET last_logged_in = ? WHERE id = ?", [
+      new Date(),
+      user.id,
+    ]);
     res.status(200).json({
-      userId: user.id,
-      token: jwt.sign({ userId: user.id }, env.secret, { expiresIn: "24h" }),
+      token: jwt.sign({ user }, env.secret, { expiresIn: "24h" }),
     });
   } catch (e) {
     console.error(e);
@@ -121,14 +135,26 @@ exports.get = async (req, res) => {
 };
 
 exports.modify = async (req, res) => {
-  if (!req.body.firstname || !req.body.lastname || !req.body.email || !req.body.role_id)
+  if (
+    !req.body.firstname ||
+    !req.body.lastname ||
+    !req.body.email ||
+    !req.body.role_id
+  )
     return res.status(400).json({ error: "Bad Request" });
   try {
     const [result] = await db.execute(
       "UPDATE users SET firstname = ?, lastname = ?, email = ?, role_id = ? WHERE id = ? LIMIT 1",
-      [req.body.firstname, req.body.lastname, req.body.email, req.body.role_id, req.params.id]
+      [
+        req.body.firstname,
+        req.body.lastname,
+        req.body.email,
+        req.body.role_id,
+        req.params.id,
+      ]
     );
-    if (!result.affectedRows) return res.status(404).json({ error: "User Not Found" });
+    if (!result.affectedRows)
+      return res.status(404).json({ error: "User Not Found" });
     res.status(200).json({ message: "User Modified" });
   } catch (e) {
     console.error(e);
@@ -138,8 +164,12 @@ exports.modify = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const [result] = await db.execute("DELETE FROM users WHERE id = ? LIMIT 1", [req.params.id]);
-    if (!result.affectedRows) return res.status(404).json({ error: "User Not Found" });
+    const [result] = await db.execute(
+      "DELETE FROM users WHERE id = ? LIMIT 1",
+      [req.params.id]
+    );
+    if (!result.affectedRows)
+      return res.status(404).json({ error: "User Not Found" });
     res.status(200).json({ message: "User Deleted" });
   } catch (e) {
     console.error(e);

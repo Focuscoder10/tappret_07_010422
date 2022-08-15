@@ -2,7 +2,7 @@ const db = require("../db");
 const fs = require("fs");
 
 exports.create = async (req, res) => {
-  if (!req.body.parent_id || !req.body.content)
+  if (!req.body.content)
     return res.status(400).json({ error: "Bad Request" });
   try {
     await db.execute(

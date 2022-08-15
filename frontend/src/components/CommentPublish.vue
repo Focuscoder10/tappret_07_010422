@@ -6,16 +6,19 @@
     <div class="authmsg">
       <div class="name">{{ comment.author_firstname }} {{ comment.author_lastname }}</div>
       <div class="msg">{{ comment.content }}</div>
-      <div class="date">{{ comment.created_at }}</div>
+      <date-time :time="comment.created_at"/>
     </div>
   </div>
 </template>
 
 <script>
+import DateTime from '@/components/DateTime.vue';
 export default {
+  components: { DateTime },
   props: {
     comment: Object,
-  }
+  },
+  
 };
 </script>
 

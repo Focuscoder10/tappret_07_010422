@@ -136,7 +136,7 @@ export default {
         }
         try {
           localStorage.setItem("token", data.token);
-          this.$store.state.token = data.token;
+          this.$store.commit("setToken",data.token)
         }catch(e){
           this.message = e.message;
           return;

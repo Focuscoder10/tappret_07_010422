@@ -56,9 +56,16 @@ export default {
         if (res.status !== 201) {
           return;
         }
+        const comment = {
+          author_firstname: this.$store.state.user.firstname,
+          author_lastname: this.$store.state.user.lastname,
+          created_at: new Date().toJSON(),
+          content: this.msg,
+        };
+        console.log(comment);
+        this.comments.unshift(comment);
+        this.msg = null;
       });
-
-      console.log(this.msg);
     },
   },
   computed: {

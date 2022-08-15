@@ -19,6 +19,9 @@ export default {
       return this.$router.history.current["path"] !== "/register";
     },
   },
+  created() {
+    this.$store.commit("setToken", localStorage.getItem("token"));
+  },
 };
 </script>
 
@@ -144,7 +147,7 @@ select {
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
-  &:hover:not(:disabled){
+  &:hover:not(:disabled) {
     color: white;
     box-shadow: $shadow;
     transform: translateY(-3px);

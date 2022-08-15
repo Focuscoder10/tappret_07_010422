@@ -19,6 +19,7 @@
           {{ post.content }}
         </span>
       </div>
+      <date-time :time="post.created_at"/>
       <div class="footer-group-icon">
         <div class="footer-left-icon">
           <i @click="addComment" class="fa-solid fa-comment-dots"></i>
@@ -36,9 +37,9 @@
 
 <script>
 import LikeAddToPost from "@/components/LikeAddToPost.vue";
-
+import DateTime from "@/components/DateTime.vue";
 export default {
-  components: { LikeAddToPost },
+  components: { LikeAddToPost,DateTime },
   props: {
     post: Object,
   },

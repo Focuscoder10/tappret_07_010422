@@ -25,7 +25,7 @@ module.exports = (req, res, next) => {
      * vérifie que le token est bien décriptable avec la clé secrète
      */
     const decodedToken = jwt.verify(match[1], env.secret);
-    const userId = decodedToken.userId;
+    const userId = decodedToken.user.id;
 
     /**
      * ajoute un objet auth à la requête qui contient l'userId
