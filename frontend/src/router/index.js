@@ -26,14 +26,14 @@ const routes = [
     component: () => import("@/views/LoginView.vue"),
   },
   {
-    path: "/comments",
-    name: "comments",
-    component: () => import("@/views/CommentView.vue"),
-  },
-  {
     path: "/posts/create",
     name: "posts-create",
     component: () => import("@/views/CreatePostView.vue"),
+  },
+  {
+    path: "/posts/:id/comments",
+    name: "comments",
+    component: () => import("@/views/CommentView.vue"),
   },
   {
     path: "/logout",

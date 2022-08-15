@@ -65,8 +65,13 @@ export default {
         method: "POST",
         headers: {},
         body: fd,
+      }).then(res => {
+        if (res.status !== 201) {
+          return;
+        }
+        this.$emit("posts-refresh");
+        this.$router.push({ path: "/" });
       });
-      this.$router.push({ path: "/"});
     },
     resetFile() {
       this.$refs.file.value = null;

@@ -3,23 +3,29 @@
     <navbar-navigation />
     <div class="container">
       <return-block title="Commentaires" />
+      <post-publish v-if="post" :post="post" />
       <div class="add-comment">
         <div class="img-profil">
           <img src="@/assets/images/beach.png" alt="" />
         </div>
 
-        <form>
+        <form @submit.prevent="verifyMsg">
           <textarea
+            v-model="msg"
             name="write-comment"
             aria-label="ajouter un commentaire"
             placeholder="Ajouter un commentaire"
             autocomplete="off"
             rows="1"
           ></textarea>
-          <button>Publier</button>
+          <button class="btn" :disabled="isNotValid">Publier</button>
         </form>
       </div>
-      <comment-publish v-for="i of [1, 2, 3, 4, 5, 6, 7]" :key="i" />
+      <comment-publish
+        v-for="comment of comments"
+        :key="comment.id"
+        :comment="comment"
+      />
     </div>
   </main>
 </template>
@@ -28,8 +34,57 @@
 import CommentPublish from "@/components/CommentPublish.vue";
 import NavbarNavigation from "@/components/NavbarNavigation.vue";
 import ReturnBlock from "@/components/ReturnBlock.vue";
+import PostPublish from "@/components/PostPublish.vue";
 export default {
-  components: { CommentPublish,NavbarNavigation,ReturnBlock  },
+  components: { CommentPublish, NavbarNavigation, ReturnBlock, PostPublish },
+  data() {
+    return {
+      post: null,
+      comments: null,
+      msg: "",
+    };
+  },
+  methods: {
+    verifyMsg() {
+      if (this.isNotValid) {
+        return;
+      }
+      this.fetch("/posts/" + this.$route.params.id + "/comments", {
+        method: "POST",
+        body: JSON.stringify({ content: this.msg }),
+      }).then(res => {
+        if (res.status !== 201) {
+          return;
+        }
+      });
+
+      console.log(this.msg);
+    },
+  },
+  computed: {
+    isNotValid() {
+      return !this.msg;
+    },
+  },
+  created() {
+    const promises = [
+      this.fetch("/posts/" + this.$route.params.id),
+      this.fetch("/posts/" + this.$route.params.id + "/comments"),
+    ];
+    Promise.all(promises).then(async ([post, comments]) => {
+      if (post.status !== 200 || comments.status !== 200) {
+        this.$router.push({ path: "/login" });
+        return;
+      }
+      this.post = await post.json();
+      this.comments = await comments.json();
+      // const data = await res.json();
+      // if (res.status !== 200) {
+      //   return;
+      // }
+      // this.post = data;
+    });
+  },
 };
 </script>
 
@@ -43,30 +98,27 @@ export default {
   gap: 1rem;
   form {
     width: 100%;
-    padding: 12px 0px;
+    // padding: 12px 0px;
     display: flex;
     background-color: white;
     border-radius: 1.2rem;
     padding: 1rem;
     gap: 1rem;
-    textarea,
-    button {
+    textarea {
       border: none;
       background: none;
       padding: 0;
-    }
-    textarea {
       width: 100%;
       text-align: left;
       resize: none;
     }
-    button {
-      color: $secondary;
-    }
+    // button {
+    //   color: $secondary;
+    // }
   }
 }
 @media screen and (min-width: 700px) {
-  .add-comment{
+  .add-comment {
     border-radius: 1.5rem;
   }
 }

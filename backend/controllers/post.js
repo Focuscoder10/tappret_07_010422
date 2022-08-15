@@ -1,4 +1,3 @@
-const { execute } = require("../db");
 const db = require("../db");
 const fs = require("fs");
 
@@ -39,12 +38,13 @@ exports.list = async (req, res) => {
       u.firstname AS author_firstname,
       u.lastname AS author_lastname,
       COUNT(l.user_id) AS likes,
-      EXISTS(SELECT * FROM likes l WHERE l.post_id = p.id AND l.user_id = ?) AS is_liked
+      EXISTS(SELECT * FROM likes l WHERE l.post_id = p.id AND l.user_id = ? LIMIT 1) AS is_liked
       FROM posts p
       JOIN users u 
       ON p.author_id = u.id 
       LEFT JOIN likes l
       ON l.post_id = p.id
+      WHERE p.parent_id IS NULL
       GROUP BY p.id
       ORDER BY p.created_at DESC
     `,
@@ -60,8 +60,23 @@ exports.list = async (req, res) => {
 exports.get = async (req, res) => {
   try {
     const [posts] = await db.execute(
-      "SELECT * FROM posts WHERE id = ? LIMIT 1",
-      [req.params.id]
+      `
+      SELECT
+      p.*,
+      u.firstname AS author_firstname,
+      u.lastname AS author_lastname,
+      COUNT(l.user_id) AS likes,
+      EXISTS(SELECT * FROM likes l WHERE l.post_id = p.id AND l.user_id = ? LIMIT 1) AS is_liked
+      FROM posts p
+      JOIN users u 
+      ON p.author_id = u.id 
+      LEFT JOIN likes l
+      ON l.post_id = p.id
+      WHERE p.id = ? AND p.parent_id IS NULL
+      GROUP BY p.id
+      
+    `,
+      [req.auth.userId, req.params.id]
     );
     if (!posts.length) return res.status(404).json({ error: "Post Not Found" });
     res.status(200).json(posts[0]);

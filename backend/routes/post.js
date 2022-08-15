@@ -12,6 +12,7 @@ const router = express.Router();
  * importation du controller "utilisateur"
  */
 const postCtrl = require("../controllers/post");
+const commentCtrl = require("../controllers/comment");
 const auth = require("../middleware/auth");
 const multer = require("../middleware/multer");
 
@@ -24,6 +25,8 @@ router.get("/:id", auth, postCtrl.get);
 router.put("/:id", auth, postCtrl.modify);
 router.delete("/:id", auth, postCtrl.delete);
 router.post("/:id/like", auth, postCtrl.like);
+router.post("/:id/comments", auth, commentCtrl.create);
+router.get("/:id/comments", auth, commentCtrl.list);
 //  router.get("/:id/viewed")
 // * retourner le router
 // */

@@ -4,17 +4,19 @@
       <img src="@/assets/images/beach.png" alt="" />
     </div>
     <div class="authmsg">
-      <div class="name">Morgan Tappret</div>
-      <div class="msg">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Impedit
-        officia incidunt corporis consequatur voluptatum commodi soluta quaerat?
-      </div>
+      <div class="name">{{ comment.author_firstname }} {{ comment.author_lastname }}</div>
+      <div class="msg">{{ comment.content }}</div>
+      <div class="date">{{ comment.created_at }}</div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    comment: Object,
+  }
+};
 </script>
 
 <style lang="scss" scoped>

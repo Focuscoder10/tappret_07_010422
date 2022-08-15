@@ -144,7 +144,7 @@ select {
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
-  &:hover{
+  &:hover:not(:disabled){
     color: white;
     box-shadow: $shadow;
     transform: translateY(-3px);
@@ -159,6 +159,9 @@ select {
   }
   &.small {
     padding: 0.3rem 0.8rem;
+  }
+  &:disabled {
+    opacity: 0.5;
   }
 }
 </style>
