@@ -1,5 +1,5 @@
 <template>
-  <div :class="type === 'navbar' ? 'logo navbar' : 'logo'">
+  <router-link to="/" :class="type === 'navbar' ? 'logo navbar' : 'logo'">
     <svg
       version="1.2"
       baseProfile="tiny"
@@ -97,7 +97,7 @@
         />
       </g>
     </svg>
-  </div>
+  </router-link>
 </template>
 
 <script>

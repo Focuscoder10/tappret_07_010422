@@ -6,7 +6,8 @@
       <post-publish v-if="post" :post="post" />
       <div class="add-comment">
         <div class="img-profil">
-          <img src="@/assets/images/beach.png" alt="" />
+          <img v-if="avatar" :src="avatar" alt="avatar de l'utilisateur">
+          <img v-else src="@/assets/images/beach.png" alt="avatar par défaut de l'utilisateur" />
         </div>
 
         <form @submit.prevent="verifyMsg">
@@ -69,6 +70,12 @@ export default {
     },
   },
   computed: {
+    avatar() {
+      const state = this.$store.state;
+      if(state.user.avatar){
+        return state.apiUrl + "/upload/" + state.user.avatar
+      }return null;
+    },
     isNotValid() {
       return !this.msg;
     },

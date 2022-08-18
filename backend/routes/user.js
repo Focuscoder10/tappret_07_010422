@@ -13,13 +13,15 @@
   */
  const userCtrl = require("../controllers/user");
  const auth = require("../middleware/auth");
+ const multer = require("../middleware/multer");
 
  /**
   * création routes d'enregistrement et d'authentification
   */
  
- router.get("/", auth, userCtrl.list);
- router.get("/:id", auth, userCtrl.get);
+//  router.get("/", auth, userCtrl.list);
+//  router.get("/:id", auth, userCtrl.get);
+ router.put("/me", auth, multer, userCtrl.modify);
 
   // */
  module.exports = router;

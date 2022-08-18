@@ -1,14 +1,17 @@
 <template>
   <nav>
     <div class="container">
-      <div class="navbar">
-        <logo-login type="navbar" />
+      <div  class="navbar">
+        <logo-login  type="navbar" />
         <i @click="toggleMenu" class="fa-solid fa-bars"></i>
       </div>
       <ul v-show="show" class="menu">
-        <li>
-          <i class="fa-solid fa-user"></i>
-          Voir votre profil
+        <li v-if="$route.name !== 'profile'">
+        
+          <router-link to="/profile">
+            <i class="fa-solid fa-user"></i>
+            Voir votre profil
+          </router-link>
         </li>
         <li>
           <router-link to="/logout">
@@ -34,6 +37,7 @@ export default {
     toggleMenu() {
       this.show = !this.show;
     },
+    
   },
 };
 </script>

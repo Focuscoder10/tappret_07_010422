@@ -124,6 +124,9 @@ select {
   display: flex;
   flex-direction: column;
 }
+i{
+  cursor: pointer;
+}
 .img-profil {
   $size: 40px;
   height: $size;
