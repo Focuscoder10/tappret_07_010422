@@ -8,7 +8,7 @@
       <ul v-show="show" class="menu">
         <li v-if="$route.name !== 'profile'">
         
-          <router-link to="/profile">
+          <router-link tabindex="2" to="/profile">
             <i class="fa-solid fa-user"></i>
             Voir votre profil
           </router-link>
@@ -78,6 +78,9 @@ nav {
       margin-right: 0.3rem;
       // margin-left: .3rem;
     }
+    a {
+      text-decoration: none;
+    }
   }
 }
 @media screen and (min-width: $bp-md) {
@@ -92,6 +95,7 @@ nav {
     }
     .menu {
       flex-direction: row;
+      display: flex !important;
       align-items: center;
       padding: 0;
     }

@@ -30,7 +30,7 @@ module.exports = (req, res, next) => {
     /**
      * ajoute un objet auth à la requête qui contient l'userId
      */
-    req.auth = { userId };
+    req.auth = { userId, user:decodedToken.user };
 
     /**
      * vérifie que l'userId du body correspond à l'userId du token

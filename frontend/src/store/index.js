@@ -40,6 +40,7 @@ export default new Vuex.Store({
   mutations: {
     setToken(state, token) {
       try {
+        localStorage.setItem("token", token);
         state.user = jwtd(token).user;
         state.token = token;
       } catch (e) {

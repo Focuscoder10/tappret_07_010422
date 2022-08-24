@@ -21,7 +21,7 @@
  
 //  router.get("/", auth, userCtrl.list);
 //  router.get("/:id", auth, userCtrl.get);
- router.put("/me", auth, multer, userCtrl.modify);
+ router.put("/me", auth, multer, userCtrl.me);
 
   // */
  module.exports = router;

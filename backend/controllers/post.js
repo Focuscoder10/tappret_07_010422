@@ -35,8 +35,10 @@ exports.list = async (req, res) => {
       `
       SELECT
       p.*,
+      u.id AS author_id,
       u.firstname AS author_firstname,
       u.lastname AS author_lastname,
+      u.avatar AS author_avatar,
       COUNT(l.user_id) AS likes,
       EXISTS(SELECT * FROM likes l WHERE l.post_id = p.id AND l.user_id = ? LIMIT 1) AS is_liked
       FROM posts p
@@ -63,8 +65,10 @@ exports.get = async (req, res) => {
       `
       SELECT
       p.*,
+      u.id AS author_id,
       u.firstname AS author_firstname,
       u.lastname AS author_lastname,
+      u.avatar AS author_avatar,
       COUNT(l.user_id) AS likes,
       EXISTS(SELECT * FROM likes l WHERE l.post_id = p.id AND l.user_id = ? LIMIT 1) AS is_liked
       FROM posts p

@@ -6,6 +6,8 @@ const bcrypt = require("bcrypt");
 const passwordValidator = require("password-validator");
 const db = require("../db");
 const env = require("../env");
+const fs = require("fs");
+const path = require("path");
 const isModerator = require("../middleware/moderator")
 const regexEmail =
   /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
@@ -78,7 +80,7 @@ exports.login = async (req, res) => {
     return res.status(400).json({ error: "Bad Request" });
   try {
     let [user] = await db.execute(
-      "SELECT id,firstname,lastname,email,password,avatar FROM users WHERE email = ? LIMIT 1",
+      "SELECT id,firstname,lastname,email,password,avatar,is_moderator FROM users WHERE email = ? LIMIT 1",
       [req.body.email]
     );
     if (!user.length) return res.status(401).json({ error: "Unauthorized" });
@@ -135,7 +137,8 @@ exports.login = async (req, res) => {
 // };
 
 
-exports.modify = async (req, res) => {
+exports.me = async (req, res) => {
+ console.log( await isModerator(req.auth.userId));
   if (!req.body.firstname || !req.body.lastname || !req.body.email)
     return res.status(400).json({ error: "Bad Request" });
   try {
@@ -188,9 +191,13 @@ exports.modify = async (req, res) => {
       lastname: req.body.lastname,
       email: req.body.email,
       id: req.auth.userId,
-      avatar: req.file.filename,
-
+      avatar: req.file ? req.file.filename : (req.auth.user.avatar || null),
+      is_moderator: await isModerator(req.auth.userId)
     }
+    if (req.auth.user.avatar && req.file) {
+      fs.unlinkSync(path.join(__dirname,"..", "upload" , req.auth.user.avatar))
+    }
+
     res.status(200).json({
       token: jwt.sign({ user }, env.secret, { expiresIn: "24h" }),
     });

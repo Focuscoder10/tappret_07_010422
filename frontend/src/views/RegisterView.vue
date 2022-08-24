@@ -110,7 +110,7 @@
             "
             :class="classPassword"
           />
-          <button @click="visible = !visible">
+          <button type="button" @click="visible = !visible">
             <i v-if="visible" class="fas fa-eye-slash"></i>
             <i v-else class="fas fa-eye"></i>
           </button>

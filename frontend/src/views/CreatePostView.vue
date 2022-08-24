@@ -10,7 +10,7 @@
           v-model="title"
           placeholder="Titre de la publication"
         />
-        <textarea v-model="content" placeholder="Entrez votre texte"></textarea>
+        <textarea v-model="content" rows="1" @input="changeHeight" placeholder="Entrez votre texte"></textarea>
         <div class="file">
           <label>
             <div class="btn">Choisir une image</div>
@@ -56,6 +56,9 @@ export default {
     ReturnBlock,
   },
   methods: {
+    changeHeight(e) {
+      e.target.style.height = e.target.scrollHeight + "px";
+    },
     submit() {
       const fd = new FormData();
       fd.set("title", this.title);
@@ -102,6 +105,7 @@ form {
   gap: $useGap;
   textarea {
     resize: none;
+    overflow-y: hidden;
   }
   .file {
     display: flex;

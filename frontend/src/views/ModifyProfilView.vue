@@ -2,7 +2,7 @@
   <main>
     <navbar-navigation @click="redirect" />
     <form
-      v-if="!isRegistered"
+      v-if="!isModified"
       @submit.prevent="modifyProfile"
       @input="verify"
       novalidate
@@ -122,7 +122,7 @@
             :class="classPassword"
           />
 
-          <button @click="visible = !visible">
+          <button type="button" @click="visible = !visible">
             <i v-if="visible" class="fas fa-eye-slash"></i>
             <i v-else class="fas fa-eye"></i>
           </button>
@@ -161,7 +161,7 @@
     </form>
     <transition name="fade">
       <alert-message
-        v-if="isRegistered || alert.type"
+        v-if="isModified || alert.type"
         :message="alert.message"
         :type="alert.type"
       />
@@ -227,7 +227,7 @@ export default {
       isFirstNameFocused: false,
       isLastNameFocused: false,
       isPasswordFocused: false,
-      isRegistered: false,
+      isModified: false,
       constains,
       details: [],
       alert: {
@@ -349,19 +349,18 @@ export default {
         body: fd,
       }).then(async res => {
         const data = await res.json();
+        if (res.status !== 200) {
+          this.alert.message = data.error;
+          this.alert.type = "error";
+          return;
+        }
         this.$store.commit("setToken", data.token)
-        console.log(data)
-        // if (res.status !== 201) {
-        //   this.alert.message = data.error;
-        //   this.alert.type = "error";
-        //   return;
-        // }
-        // this.alert.message = "Votre compte a bien été crée";
-        // this.alert.type = "success";
-        // this.isRegistered = true;
-        // setTimeout(() => {
-        //   this.$router.push({ path: "/" });
-        // }, 3000);
+        this.alert.message = "Votre compte a bien été mise à jour";
+        this.alert.type = "success";
+        this.isModified = true;
+        setTimeout(() => {
+          this.$router.push({ path: "/" });
+        }, 3000);
       });
     },
   },

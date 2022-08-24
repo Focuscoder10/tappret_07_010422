@@ -49,7 +49,7 @@
             "
             :class="classPassword"
           />
-          <button @click="visible = !visible">
+          <button type="button" @click="visible = !visible">
             <i v-if="visible" class="fas fa-eye-slash"></i>
             <i v-else class="fas fa-eye"></i>
           </button>
@@ -135,7 +135,6 @@ export default {
           return;
         }
         try {
-          localStorage.setItem("token", data.token);
           this.$store.commit("setToken",data.token)
         }catch(e){
           this.message = e.message;

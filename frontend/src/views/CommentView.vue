@@ -5,14 +5,12 @@
       <return-block title="Commentaires" />
       <post-publish v-if="post" :post="post" />
       <div class="add-comment">
-        <div class="img-profil">
-          <img v-if="avatar" :src="avatar" alt="avatar de l'utilisateur">
-          <img v-else src="@/assets/images/beach.png" alt="avatar par défaut de l'utilisateur" />
-        </div>
+        <avatar-user :avatar="$store.state.user.avatar" />
 
         <form @submit.prevent="verifyMsg">
           <textarea
             v-model="msg"
+            @input="changeHeight"
             name="write-comment"
             aria-label="ajouter un commentaire"
             placeholder="Ajouter un commentaire"
@@ -36,8 +34,15 @@ import CommentPublish from "@/components/CommentPublish.vue";
 import NavbarNavigation from "@/components/NavbarNavigation.vue";
 import ReturnBlock from "@/components/ReturnBlock.vue";
 import PostPublish from "@/components/PostPublish.vue";
+import AvatarUser from "@/components/AvatarUser.vue";
 export default {
-  components: { CommentPublish, NavbarNavigation, ReturnBlock, PostPublish },
+  components: {
+    CommentPublish,
+    NavbarNavigation,
+    ReturnBlock,
+    PostPublish,
+    AvatarUser,
+  },
   data() {
     return {
       post: null,
@@ -46,6 +51,9 @@ export default {
     };
   },
   methods: {
+    changeHeight(e) {
+      e.target.style.height = e.target.scrollHeight + "px";
+    },
     verifyMsg() {
       if (this.isNotValid) {
         return;
@@ -70,12 +78,6 @@ export default {
     },
   },
   computed: {
-    avatar() {
-      const state = this.$store.state;
-      if(state.user.avatar){
-        return state.apiUrl + "/upload/" + state.user.avatar
-      }return null;
-    },
     isNotValid() {
       return !this.msg;
     },
@@ -119,6 +121,7 @@ export default {
     padding: 1rem;
     gap: 1rem;
     textarea {
+      outline: none;
       border: none;
       background: none;
       padding: 0;
@@ -126,9 +129,9 @@ export default {
       text-align: left;
       resize: none;
     }
-    // button {
-    //   color: $secondary;
-    // }
+    button {
+      align-self: center;
+    }
   }
 }
 @media screen and (min-width: 700px) {

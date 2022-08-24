@@ -36,7 +36,7 @@ app.use(cors);
  */
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
-app.use("/api/roles", roleRoutes);
+// app.use("/api/roles", roleRoutes);
 app.use("/api/users", userRoutes);
 
 app.use((err, req, res, next) => {

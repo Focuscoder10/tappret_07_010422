@@ -1,7 +1,7 @@
 <template>
   <div class="comment">
     <div class="img-profil">
-      <img src="@/assets/images/beach.png" alt="" />
+      <avatar-user :avatar="comment.author_avatar"/>
     </div>
     <div class="authmsg">
       <div class="name">{{ comment.author_firstname }} {{ comment.author_lastname }}</div>
@@ -13,12 +13,12 @@
 
 <script>
 import DateTime from '@/components/DateTime.vue';
+import AvatarUser from './AvatarUser.vue';
 export default {
-  components: { DateTime },
+  components: { DateTime, AvatarUser },
   props: {
     comment: Object,
   },
-  
 };
 </script>
 

@@ -33,7 +33,8 @@ exports.list = async (req, res) => {
       p.content,
       p.created_at,
       u.firstname AS author_firstname,
-      u.lastname AS author_lastname
+      u.lastname AS author_lastname,
+      u.avatar AS author_avatar
       FROM posts p
       JOIN users u 
       ON p.author_id = u.id
