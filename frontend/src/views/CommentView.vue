@@ -21,7 +21,7 @@
         </form>
       </div>
       <comment-publish
-        v-for="comment of comments"
+        v-for="comment of post.comments"
         :key="comment.id"
         :comment="comment"
       />
@@ -46,7 +46,6 @@ export default {
   data() {
     return {
       post: null,
-      comments: null,
       msg: "",
     };
   },
@@ -83,22 +82,12 @@ export default {
     },
   },
   created() {
-    const promises = [
-      this.fetch("/posts/" + this.$route.params.id),
-      this.fetch("/posts/" + this.$route.params.id + "/comments"),
-    ];
-    Promise.all(promises).then(async ([post, comments]) => {
-      if (post.status !== 200 || comments.status !== 200) {
+    this.fetch("/posts/" + this.$route.params.id).then(async post => {
+      if (post.status !== 200) {
         this.$router.push({ path: "/login" });
         return;
       }
       this.post = await post.json();
-      this.comments = await comments.json();
-      // const data = await res.json();
-      // if (res.status !== 200) {
-      //   return;
-      // }
-      // this.post = data;
     });
   },
 };

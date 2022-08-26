@@ -1,12 +1,12 @@
 <template>
   <div class="post-card">
     <div class="hearder-post-card">
-      <avatar-user :avatar="post.author_avatar" />
+      <avatar-user :avatar="post.user.avatar" />
       <div class="title-name-post-card">
         <div class="title-post">{{ post.title }}</div>
         <div class="post-name">
-          {{ post.author_firstname }}
-          {{ post.author_lastname }}
+          {{ post.user.firstname }}
+          {{ post.user.lastname }}
         </div>
       </div>
     </div>
@@ -55,8 +55,8 @@ export default {
     },
     isEditable() {
       return (
-        this.post.author_id === this.$store.state.user.id ||
-        this.$store.state.user.is_moderator
+        this.post.user.id === this.$store.state.user.id ||
+        this.$store.state.user.isModerator
       );
     },
   },
@@ -68,10 +68,10 @@ export default {
 @import "@/assets/scss/_mixins.scss";
 
 .post-card {
-  // border: 1px solid black;
   border-radius: 1rem;
-  box-shadow: $secondary() 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px,
-    rgba(17, 17, 26, 0.1) 0px 16px 56px;
+  overflow: hidden;
+  box-shadow: 0.25rem 0.75rem 1.25rem rgb(black, 0.19),
+    0 0.25rem 0.5rem rgb(black, 0.23);
   .hearder-post-card {
     display: flex;
     align-items: center;
@@ -99,17 +99,17 @@ export default {
     > img {
       width: 100%;
     }
-  }.text-contain {
+  }
+  .text-contain {
     padding: $usePadding;
-      > .text-post-card {
-        margin: 0;
-      }
+    > .text-post-card {
+      margin: 0;
     }
+  }
   .footer-post-card {
     padding: $usePadding;
     background-color: lighten($tertiary, 60%);
 
-    
     .footer-group-icon {
       display: flex;
       justify-content: space-between;

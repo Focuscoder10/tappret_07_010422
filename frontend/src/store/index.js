@@ -41,7 +41,7 @@ export default new Vuex.Store({
     setToken(state, token) {
       try {
         localStorage.setItem("token", token);
-        state.user = jwtd(token).user;
+        state.user = jwtd(token);
         state.token = token;
       } catch (e) {
         state.user = null;

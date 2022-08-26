@@ -1,8 +1,8 @@
 <template>
   <main>
     <navbar-navigation />
-    <div class="container-post container"  @posts-refresh="$forceUpdate()">
-      <post-publish v-for="post of posts" :post="post" :key="post.id"/>
+    <div class="container-post container" @posts-refresh="$forceUpdate()">
+      <post-publish v-for="post of posts" :post="post" :key="post.id" />
     </div>
     <new-post-button />
   </main>
@@ -20,15 +20,14 @@ export default {
       posts: [],
     };
   },
-  
+
   created() {
-    this.fetch("/posts").then(async res => {
-      const data = await res.json();
-      if (res.status !== 200) {
+    this.fetch("/posts").then(async posts => {
+      if (posts.status !== 200) {
         this.$router.push({ path: "/login" });
         return;
       }
-      this.posts = data;
+      this.posts = await posts.json();
     });
   },
 };
