@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main role="main">
     <navbar-navigation />
     <div class="container-post container" @posts-refresh="$forceUpdate()">
       <post-publish v-for="post of posts" :post="post" :key="post.id" />

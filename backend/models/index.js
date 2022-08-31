@@ -11,18 +11,23 @@ const sequelize = new Sequelize(
 
 const User = require("./user")(sequelize);
 const Post = require("./post")(sequelize);
+// const Like = require("./like")(sequelize);
 const Comment = require("./comment")(sequelize);
 Post.hasMany(Comment);
 Comment.belongsTo(Post);
 User.hasMany(Post);
 Post.belongsTo(User);
-User.belongsToMany(Post, { through: "likes" });
-Post.belongsToMany(User, { through: "likes" });
+User.hasMany(Comment);
+Comment.belongsTo(User);
+User.belongsToMany(Post, { through: "likes", as: "liked"  });
+Post.belongsToMany(User, { through: "likes", as: "likers" });
+
 
 module.exports = {
   Sequelize,
   sequelize,
   Post,
   User,
-  Comment
+  Comment,
+  // Like
 };

@@ -74,6 +74,9 @@ select {
   &[name="password"] {
     position: relative;
   }
+  &:focus{
+    outline-width: 0.25rem;
+  }
   &.success {
     outline-color: rgb(green, 0.5);
   }
@@ -150,7 +153,7 @@ i{
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled),&:focus:not(:disabled) {
     color: white;
     box-shadow: $shadow;
     transform: translateY(-3px);

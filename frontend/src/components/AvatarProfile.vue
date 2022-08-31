@@ -1,6 +1,6 @@
 <template>
   <div class="middle-img">
-    <label>
+    <label tabindex="1" @keydown="onKeydown">
       <input
         @change="changeFile"
         type="file"
@@ -8,9 +8,9 @@
         :accept="types.join(',')"
       />
       <div class="img-profil size">
-        <img :src="newImg || avatar || defaultImg" alt="" />
+        <img :src="newImg || avatar || defaultImg" alt="Avatar de l'utilisateur" />
       </div>
-      <div class="change">Changer de photo</div>
+      <div class="change" aria-label="éditer votre avatar">Changer de photo</div>
     </label>
   </div>
 </template>
@@ -28,6 +28,9 @@ export default {
   },
   
   methods: {
+    onKeydown(e) {
+      if(e.key==="Enter")this.$refs.file.click();
+    },
     changeFile() {
       if (this.$refs.file.files.length > 0) {
         const file = this.$refs.file.files[0];

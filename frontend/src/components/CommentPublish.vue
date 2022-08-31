@@ -1,12 +1,12 @@
 <template>
   <div class="comment">
     <div class="img-profil">
-      <avatar-user :avatar="comment.author_avatar"/>
+      <avatar-user :avatar="comment.user.avatar"/>
     </div>
     <div class="authmsg">
-      <div class="name">{{ comment.author_firstname }} {{ comment.author_lastname }}</div>
+      <div class="name">{{ comment.user.firstname }} {{ comment.user.lastname }}</div>
       <div class="msg">{{ comment.content }}</div>
-      <date-time :time="comment.created_at"/>
+      <date-time :time="comment.createdAt"/>
     </div>
   </div>
 </template>

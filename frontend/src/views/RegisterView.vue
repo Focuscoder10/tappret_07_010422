@@ -1,7 +1,7 @@
 <template>
-  <main>
+  <main role="main">
     <logo-login />
-    <form
+    <form role="form"
       v-if="!isRegistered"
       @submit.prevent="register"
       @input="verify"
@@ -9,6 +9,7 @@
     >
       <div class="relative">
         <input
+          aria-label="entrer votre adresse email"
           type="email"
           name="email"
           placeholder="Adresse email"
@@ -39,6 +40,7 @@
 
       <div class="relative">
         <input
+          aria-label="entrer votre prénom"
           type="text"
           name="firstname"
           placeholder="Prénom"
@@ -68,6 +70,7 @@
 
       <div class="relative">
         <input
+          aria-label="entrer votre nom"
           type="text"
           name="lastname"
           placeholder="Nom"
@@ -96,6 +99,7 @@
       <div class="relative">
         <div class="eyed">
           <input
+            aria-label="entrer votre mot de passe"
             :type="visible ? 'text' : 'password'"
             name="password"
             placeholder="Mot de passe"

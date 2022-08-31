@@ -1,4 +1,4 @@
-const { DataTypes, Op } = require("sequelize");
+const { DataTypes } = require("sequelize");
 module.exports = sequelize => {
   const Post = sequelize.define(
     "post",
@@ -10,15 +10,6 @@ module.exports = sequelize => {
       },
       media: DataTypes.STRING,
     },
-    {
-      defaultScope: {
-        where: {
-          postId: {
-            [Op.eq]: null,
-          },
-        },
-      },
-    }
   );
 
   return Post;

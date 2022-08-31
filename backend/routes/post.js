@@ -22,7 +22,7 @@ const multer = require("../middleware/multer");
 router.post("/", auth, multer, postCtrl.create);
 router.get("/", auth, postCtrl.list);
 router.get("/:id", auth, postCtrl.get);
-router.put("/:id", auth, postCtrl.modify);
+router.put("/:id", auth, multer, postCtrl.modify);
 router.delete("/:id", auth, postCtrl.delete);
 router.post("/:id/like", auth, postCtrl.like);
 router.post("/:id/comments", auth, commentCtrl.create);

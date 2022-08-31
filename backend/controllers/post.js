@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { Post, User } = require("../models");
+const { Post, User, Comment, sequelize } = require("../models");
 
 exports.create = async (req, res) => {
   if (!req.body.title || !req.body.content)
@@ -23,6 +23,30 @@ exports.list = async (req, res) => {
   try {
     const posts = await Post.findAll({
       include: [User],
+      order: [["createdAt", "DESC"]],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM likes WHERE postId = post.id)`
+            ),
+            "likes",
+          ],
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM comments WHERE postId = post.id)`
+            ),
+            "commentsCount",
+          ],
+          [
+            sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE postId = post.id AND userId = $1)`
+            ),
+            "isLiked",
+          ],
+        ],
+      },
+      bind: [req.auth.user.id],
     });
     res.status(200).json(posts);
   } catch (e) {
@@ -33,7 +57,35 @@ exports.list = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const post = await Post.findByPk(req.params.id, { include: ["comments"] });
+    const post = await Post.findByPk(req.params.id, {
+      include: [User, { model: Comment, include: [User] }],
+      order: [[Comment, "createdAt", "DESC"]],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM likes WHERE postId = post.id)`
+            ),
+            "likes",
+          ],
+          [
+            sequelize.literal(
+              `(SELECT COUNT(*) FROM comments WHERE postId = post.id)`
+            ),
+            "commentsCount",
+          ],
+
+          [
+            sequelize.literal(
+              `EXISTS(SELECT * FROM likes WHERE postId = post.id AND userId = $1)`
+            ),
+            "isLiked",
+          ],
+        ],
+      },
+      bind: [req.auth.user.id],
+
+    });
     if (!post) return res.status(404).json({ error: "Post Not Found" });
     res.status(200).json(post);
   } catch (e) {
@@ -43,16 +95,16 @@ exports.get = async (req, res) => {
 };
 
 exports.modify = async (req, res) => {
+  console.log(req.body);
   if (!req.body.title || !req.body.content)
     return res.status(400).json({ error: "Bad Request" });
   try {
-    const array = await Post.update(
-      {
-        title: req.body.title,
-        content: req.body.content,
-      },
-      { where: { id: req.params.id } }
-    );
+    const post = {
+      title: req.body.title,
+      content: req.body.content,
+    };
+    if (req.file) post.media = req.file.filename;
+    const array = await Post.update(post, { where: { id: req.params.id } });
     console.log(array);
     if (!array.length) return res.status(404).json({ error: "Post Not Found" });
     res.status(200).json({ message: "Post Modified" });
@@ -75,24 +127,13 @@ exports.delete = async (req, res) => {
 
 exports.like = async (req, res) => {
   try {
+    const post = await Post.findByPk(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post Not Found" });
     if (req.body.isLiked) {
-      await db.execute(
-        `
-        INSERT INTO likes
-        (post_id,user_id)
-        VALUES
-        (?,?)
-      `,
-        [req.params.id, req.auth.user.id]
-      );
+      await post.addLikers(req.auth.user.id);
       res.status(200).json({ message: "Post Liked" });
     } else {
-      await db.execute(
-        `DELETE FROM likes
-         WHERE post_id = ? AND user_id = ?
-         LIMIT 1`,
-        [req.params.id, req.auth.user.id]
-      );
+      await post.removeLikers(req.auth.user.id);
       res.status(200).json({ message: "Post Unliked" });
     }
   } catch (e) {

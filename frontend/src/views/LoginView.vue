@@ -1,9 +1,10 @@
 <template>
-  <main>
+  <main role="main">
     <logo-login />
-    <form @submit.prevent="login" @input="verify" novalidate>
+    <form role="form" @submit.prevent="login" @input="verify" novalidate>
       <div class="relative">
         <input
+          aria-label="saisissez votre adresse email"
           type="email"
           name="email"
           placeholder="Adresse email"
@@ -35,6 +36,7 @@
       <div class="relative">
         <div class="eyed">
           <input
+            aria-label="saisissez votre mot de passe"
             :type="visible ? 'text' : 'password'"
             name="password"
             placeholder="Mot de passe"

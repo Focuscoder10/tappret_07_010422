@@ -1,5 +1,5 @@
 <template>
-  <div class="post-card">
+  <div tabindex="2" class="post-card">
     <div class="hearder-post-card">
       <avatar-user :avatar="post.user.avatar" />
       <div class="title-name-post-card">
@@ -19,16 +19,21 @@
       </span>
     </div>
     <div class="footer-post-card">
-      <date-time :time="post.created_at" />
+      <date-time :time="post.createdAt" />
       <div class="footer-group-icon">
         <div class="footer-left-icon">
-          <i @click="addComment" class="fa-solid fa-comment-dots"></i>
+          <div>
+            <router-link :to="{ path: `/posts/${post.id}/comments` }" tabindex="2">
+              <i class="fa-solid fa-comment-dots"></i>
+              {{ post.commentsCount }}
+            </router-link>
+            </div>
           <!-- <i class="fa-solid fa-thumbs-up"></i> -->
-          <like-add-to-post :post="post" />
+          <like-add-to-post tabindex="2" :post="post" />
         </div>
         <div v-if="isEditable" class="footer-right-icon">
-          <i class="fa-solid fa-pen"></i>
-          <i class="fa-solid fa-trash-can"></i>
+          <router-link :to="{ name: 'posts-modify', params: { id: post.id } }"><i class="fa-solid fa-pen" tabindex="2" aria-label="icone d'édition du poste"></i></router-link>
+          <i class="fa-solid fa-trash-can" tabindex="2" aria-label="icone de suppréssion du poste"></i>
         </div>
       </div>
     </div>
@@ -44,18 +49,13 @@ export default {
   props: {
     post: Object,
   },
-  methods: {
-    addComment() {
-      this.$router.push({ path: `/posts/${this.post.id}/comments` });
-    },
-  },
   computed: {
     mediaSrc() {
       return this.$store.state.apiUrl + "/upload/" + this.post.media;
     },
     isEditable() {
       return (
-        this.post.user.id === this.$store.state.user.id ||
+        this.post.userId === this.$store.state.user.id ||
         this.$store.state.user.isModerator
       );
     },
@@ -122,6 +122,12 @@ export default {
           font-size: 1.5rem;
         }
       }
+      .footer-left-icon > div{
+        a {
+          text-decoration: none;
+        }
+      }
+
     }
   }
 }

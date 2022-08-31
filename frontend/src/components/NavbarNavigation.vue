@@ -1,20 +1,24 @@
 <template>
-  <nav>
+  <nav role="navigation">
     <div class="container">
-      <div  class="navbar">
-        <logo-login  type="navbar" />
-        <i @click="toggleMenu" class="fa-solid fa-bars"></i>
+      <div class="navbar">
+        <logo-login type="navbar" tabindex="1" />
+        <i
+          tabindex="1"
+          @keydown="toggleMenu"
+          @click="toggleMenu"
+          class="fa-solid fa-bars"
+        ></i>
       </div>
       <ul v-show="show" class="menu">
         <li v-if="$route.name !== 'profile'">
-        
-          <router-link tabindex="2" to="/profile">
+          <router-link tabindex="1" to="/profile">
             <i class="fa-solid fa-user"></i>
             Voir votre profil
           </router-link>
         </li>
         <li>
-          <router-link to="/logout">
+          <router-link tabindex="1" to="/logout">
             <i class="fa-solid fa-right-from-bracket"></i>
             Déconnexion
           </router-link>
@@ -34,10 +38,10 @@ export default {
     };
   },
   methods: {
-    toggleMenu() {
-      this.show = !this.show;
+    toggleMenu(e) {
+      if ((e.type === "keydown" && e.key === "Enter") || e.type === "click")
+        this.show = !this.show;
     },
-    
   },
 };
 </script>
@@ -80,6 +84,9 @@ nav {
     }
     a {
       text-decoration: none;
+      &:hover {
+        color: lighten($primary, 40%);
+      }
     }
   }
 }

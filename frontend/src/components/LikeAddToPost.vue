@@ -1,6 +1,6 @@
 <template>
-  <div class="container-like" :class="classLike" @click="like">
-    <i class="fa-solid fa-thumbs-up"></i>
+  <div class="container-like" :class="classLike" @click="like" @keydown="like">
+    <a><i class="fa-solid fa-thumbs-up"></i></a>
     {{ count }}
   </div>
 </template>
@@ -14,11 +14,12 @@ export default {
     };
   },
   created() {
-    this.isLiked = this.post.is_liked;
+    this.isLiked = this.post.isLiked;
     this.count = this.post.likes;
   },
   methods: {
-    like() {
+    like(e) {
+      if ((e.type === "keydown" && e.key === "Enter") || e.type === "click");
       this.fetch(`/posts/${this.post.id}/like`, {
         method: "POST",
         body: JSON.stringify({ isLiked: !this.isLiked }),
@@ -47,7 +48,7 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/scss/_variables.scss";
-.container-like {
+.container-like{
   i {
     font-size: 1.5rem;
   }

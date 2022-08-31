@@ -1,19 +1,28 @@
 <template>
-  <main>
+  <main role="main">
     <navbar-navigation />
-    <return-block title="Créer une publication" />
+    <return-block
+      :title="isEdit ? 'Modifier votre publication' : 'Créer une publication'"
+    />
 
     <div class="container with-padding">
-      <form @submit.prevent="submit">
+      <form role="form" @submit.prevent="submit">
         <input
           type="text"
           v-model="title"
           placeholder="Titre de la publication"
         />
-        <textarea v-model="content" rows="1" @input="changeHeight" placeholder="Entrez votre texte"></textarea>
+        <textarea
+          v-model="content"
+          rows="1"
+          @input="changeHeight"
+          placeholder="Entrez votre texte"
+        ></textarea>
         <div class="file">
           <label>
-            <div class="btn">Choisir une image</div>
+            <div class="btn">
+              {{ isEdit ? "Modifier votre" : "Choisir une" }} image
+            </div>
             <input
               @change="changeFile"
               type="file"
@@ -25,14 +34,16 @@
             <i class="fa-solid fa-circle-xmark"></i>
           </button>
         </div>
-        <div class="img" v-if="img">
-          <div>{{ file.name }}</div>
-          <img :src="img" />
+        <div class="img">
+          <div v-if="file">{{ file.name }}</div>
+          <img v-if="img" :src="img" />
         </div>
         <!-- <button class="btn tertiary">
           <i class="fa-solid fa-arrow-up-from-bracket"></i>
         </button> -->
-        <button type="submit" class="btn">Publier</button>
+        <button type="submit" class="btn">
+          {{ isEdit ? "Éditer" : "Publier" }}
+        </button>
       </form>
     </div>
   </main>
@@ -49,11 +60,26 @@ export default {
       file: null,
       img: null,
       types: ["image/jpeg", "image/png", "image/gif"],
+      isEdit: false,
     };
   },
   components: {
     NavbarNavigation,
     ReturnBlock,
+  },
+  created() {
+    if (!this.$route.params.id) return;
+    this.fetch("/posts/" + this.$route.params.id).then(async post => {
+      if (post.status !== 200) {
+        this.$router.push({ path: "/login" });
+        return;
+      }
+      const data = await post.json();
+      this.title = data.title;
+      this.content = data.content;
+      this.img = this.$store.state.apiUrl + "/upload/" + data.media;
+      this.isEdit = true;
+    });
   },
   methods: {
     changeHeight(e) {
@@ -64,12 +90,12 @@ export default {
       fd.set("title", this.title);
       fd.set("content", this.content);
       if (this.file) fd.set("file", this.file);
-      this.fetch("/posts", {
-        method: "POST",
+      this.fetch("/posts/" + (this.isEdit ? this.$route.params.id : ""), {
+        method: this.isEdit ? "PUT" : "POST",
         headers: {},
         body: fd,
       }).then(res => {
-        if (res.status !== 201) {
+        if (![200,201].includes(res.status)) {
           return;
         }
         this.$emit("posts-refresh");

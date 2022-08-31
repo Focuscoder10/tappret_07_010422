@@ -1,6 +1,7 @@
 <template>
   <router-link to="/" :class="type === 'navbar' ? 'logo navbar' : 'logo'">
     <svg
+      aria-label="logo de l'entreprise groupomania"
       version="1.2"
       baseProfile="tiny"
       xmlns="http://www.w3.org/2000/svg"
@@ -29,6 +30,7 @@
       </g>
     </svg>
     <svg
+      aria-label="logo de l'entreprise groupomania"
       version="1.2"
       baseProfile="tiny"
       xmlns="http://www.w3.org/2000/svg"

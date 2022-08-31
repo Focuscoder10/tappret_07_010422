@@ -1,5 +1,5 @@
 <template>
-  <footer>
+  <footer role="contentinfo">
     <a href="#">Mentions Légales</a>
     <a href="#">Conditions d'utilisations</a>
   </footer>

@@ -1,7 +1,7 @@
 <template>
-  <main>
+  <main role="main">
     <navbar-navigation @click="redirect" />
-    <form
+    <form role="form"
       v-if="!isModified"
       @submit.prevent="modifyProfile"
       @input="verify"
@@ -11,6 +11,7 @@
       <div class="relative">
         <label for="email">Adresse email</label>
         <input
+          aria-label="éditer votre adresse email"
           type="email"
           id="email"
           name="email"
@@ -43,6 +44,7 @@
       <div class="relative">
         <label for="firstname">Prénom</label>
         <input
+          aria-label="éditer votre prénom"
           type="text"
           id="firstname"
           name="firstname"
@@ -74,6 +76,7 @@
       <div class="relative">
         <label for="lastname">Nom</label>
         <input
+          aria-label="éditer votre nom"
           type="text"
           id="lastname"
           name="lastname"
@@ -107,6 +110,7 @@
         <label v-if="show" for="password">Mot de passe</label>
         <div v-if="show" class="eyed">
           <input
+            aria-label="éditer votre mot de passe"
             :type="visible ? 'text' : 'password'"
             id="password"
             name="password"
@@ -155,7 +159,7 @@
           Enregistrer vos modifications
         </button>
       </div>
-      <div class="backup">
+      <div class="return">
         <router-link to="/"><i class="fa-solid fa-arrow-left"></i></router-link>
       </div>
     </form>
@@ -372,6 +376,10 @@ export default {
 @import "@/assets/scss/_variables.scss";
 @import "@/assets/scss/_signinup.scss";
 @import "@/assets/scss/_mixins.scss";
+
+.return {
+  align-items: flex-start;
+}
 .fa-arrow-left {
   font-size: 2rem;
 }

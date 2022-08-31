@@ -1,6 +1,6 @@
 <template>
   <header class="container">
-    <div @click="historyBack" class="icon-arrow">
+    <div @click="historyBack" @keydown="historyBack" tabindex="1" class="icon-arrow">
       <i class="fa-solid fa-angle-left"></i>
     </div>
     <h1>{{ title }}</h1>
@@ -13,7 +13,8 @@ export default {
     title: String,
   },
    methods: {
-    historyBack() {
+    historyBack(e) {
+      if ((e.type === "keydown" && e.key === "Enter") || e.type === "click")
       this.$router.back();
     },
   },

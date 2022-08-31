@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main role="main">
     <navbar-navigation />
     <div class="container">
       <return-block title="Commentaires" />
@@ -7,7 +7,7 @@
       <div class="add-comment">
         <avatar-user :avatar="$store.state.user.avatar" />
 
-        <form @submit.prevent="verifyMsg">
+        <form role="form" @submit.prevent="verifyMsg">
           <textarea
             v-model="msg"
             @input="changeHeight"
@@ -20,11 +20,13 @@
           <button class="btn" :disabled="isNotValid">Publier</button>
         </form>
       </div>
-      <comment-publish
-        v-for="comment of post.comments"
-        :key="comment.id"
-        :comment="comment"
-      />
+      <div v-if="post" class="comments">
+        <comment-publish
+          v-for="comment of comments"
+          :key="comment.id"
+          :comment="comment"
+        />
+      </div>
     </div>
   </main>
 </template>
@@ -46,6 +48,7 @@ export default {
   data() {
     return {
       post: null,
+      comments: [],
       msg: "",
     };
   },
@@ -65,12 +68,14 @@ export default {
           return;
         }
         const comment = {
-          author_firstname: this.$store.state.user.firstname,
-          author_lastname: this.$store.state.user.lastname,
           created_at: new Date().toJSON(),
           content: this.msg,
+          user: {
+            firstname: this.$store.state.user.firstname,
+            lastname: this.$store.state.user.lastname,
+            avatar: this.$store.state.user.avatar,
+          },
         };
-        console.log(comment);
         this.comments.unshift(comment);
         this.msg = null;
       });
@@ -87,7 +92,10 @@ export default {
         this.$router.push({ path: "/login" });
         return;
       }
-      this.post = await post.json();
+      const data = await post.json();
+      this.comments = data.comments;
+      delete data.comments;
+      this.post = data;
     });
   },
 };
