@@ -47,7 +47,6 @@ export default new Vuex.Store({
         state.user = null;
         state.token = null;
         localStorage.removeItem("token");
-        console.error(e);
       }
     },
   },

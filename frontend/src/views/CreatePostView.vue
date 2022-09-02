@@ -1,6 +1,5 @@
 <template>
   <main role="main">
-    <navbar-navigation />
     <return-block
       :title="isEdit ? 'Modifier votre publication' : 'Créer une publication'"
     />
@@ -50,7 +49,6 @@
 </template>
 
 <script>
-import NavbarNavigation from "@/components/NavbarNavigation.vue";
 import ReturnBlock from "@/components/ReturnBlock.vue";
 export default {
   data() {
@@ -64,7 +62,6 @@ export default {
     };
   },
   components: {
-    NavbarNavigation,
     ReturnBlock,
   },
   created() {
@@ -83,6 +80,7 @@ export default {
   },
   methods: {
     changeHeight(e) {
+      e.target.style.height = "auto";
       e.target.style.height = e.target.scrollHeight + "px";
     },
     submit() {
@@ -95,7 +93,7 @@ export default {
         headers: {},
         body: fd,
       }).then(res => {
-        if (![200,201].includes(res.status)) {
+        if (![200, 201].includes(res.status)) {
           return;
         }
         this.$emit("posts-refresh");

@@ -11,11 +11,6 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/about",
-    name: "about",
-    component: () => import("@/views/AboutView.vue"),
-  },
-  {
     path: "/register",
     name: "register",
     component: () => import("@/views/RegisterView.vue"),
@@ -42,14 +37,14 @@ const routes = [
   },
   {
     path: "/profile",
-    name:"profile",
+    name: "profile",
     component: () => import("@/views/ModifyProfilView.vue"),
   },
   {
     path: "/logout",
     name: "logout",
-    component: () => import("@/views/LogoutView.vue")
-  }
+    component: () => import("@/views/LogoutView.vue"),
+  },
 ];
 
 const router = new VueRouter({
@@ -59,14 +54,14 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/register'];
+  const publicPages = ["/login", "/register"];
   const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem('token');
+  const loggedIn = localStorage.getItem("token");
   if (authRequired && !loggedIn) {
-    next('/login');
-  }else {
+    next("/login");
+  } else {
     next();
   }
-})
+});
 
 export default router;

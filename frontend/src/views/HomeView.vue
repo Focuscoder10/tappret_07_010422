@@ -1,6 +1,5 @@
 <template>
   <main role="main">
-    <navbar-navigation />
     <div class="container-post container" @posts-refresh="$forceUpdate()">
       <post-publish v-for="post of posts" :post="post" :key="post.id" />
     </div>
@@ -9,18 +8,16 @@
 </template>
 
 <script>
-import NavbarNavigation from "@/components/NavbarNavigation.vue";
 import NewPostButton from "@/components/NewPostButton.vue";
 import PostPublish from "@/components/PostPublish.vue";
 
 export default {
-  components: { NavbarNavigation, NewPostButton, PostPublish },
+  components: { NewPostButton, PostPublish },
   data() {
     return {
       posts: [],
     };
   },
-
   created() {
     this.fetch("/posts").then(async posts => {
       if (posts.status !== 200) {
@@ -35,7 +32,7 @@ export default {
 
 <style lang="scss" scoped>
 .container-post {
-  padding: 1rem;
+  padding-top: 1rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;

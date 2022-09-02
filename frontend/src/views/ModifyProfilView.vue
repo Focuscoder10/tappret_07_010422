@@ -1,183 +1,175 @@
 <template>
   <main role="main">
-    <navbar-navigation @click="redirect" />
-    <form role="form"
-      v-if="!isModified"
-      @submit.prevent="modifyProfile"
-      @input="verify"
-      novalidate
-    >
-      <avatar-profile @avatar-change="avatarChange" />
-      <div class="relative">
-        <label for="email">Adresse email</label>
-        <input
-          aria-label="éditer votre adresse email"
-          type="email"
-          id="email"
-          name="email"
-          v-model="email"
-          @focus="
-            isEmailFocused = true;
-            verify();
-          "
-          @blur="
-            isEmailFocused = false;
-            verify();
-          "
-          :class="classEmail"
-        />
-
-        <transition name="fade">
-          <div v-if="isEmailTooltipVisible" class="tooltip">
-            <div>
-              <ul>
-                <li :class="classEmail">
-                  L'adresse email est
-                  {{ verifyEmail ? "correcte" : "incorrecte" }}
-                </li>
-              </ul>
-            </div>
-          </div>
-        </transition>
-      </div>
-
-      <div class="relative">
-        <label for="firstname">Prénom</label>
-        <input
-          aria-label="éditer votre prénom"
-          type="text"
-          id="firstname"
-          name="firstname"
-          v-model="firstname"
-          @focus="
-            isFirstNameFocused = true;
-            verify();
-          "
-          @blur="
-            isFirstNameFocused = false;
-            verify();
-          "
-          :class="classFirstName"
-        />
-
-        <transition name="fade">
-          <div v-if="isFirstNameTooltipVisible" class="tooltip">
-            <div>
-              <ul>
-                <li :class="classFirstName">
-                  Veuillez saisir un prénom correct
-                </li>
-              </ul>
-            </div>
-          </div>
-        </transition>
-      </div>
-
-      <div class="relative">
-        <label for="lastname">Nom</label>
-        <input
-          aria-label="éditer votre nom"
-          type="text"
-          id="lastname"
-          name="lastname"
-          v-model="lastname"
-          @focus="
-            isLastNameFocused = true;
-            verify();
-          "
-          @blur="
-            isLastNameFocused = false;
-            verify();
-          "
-          :class="classLastName"
-        />
-
-        <transition name="fade">
-          <div v-if="isLastNameTooltipVisible" class="tooltip">
-            <div>
-              <ul>
-                <li :class="classLastName">Veuillez saisir un nom correct</li>
-              </ul>
-            </div>
-          </div>
-        </transition>
-      </div>
-
-      <div class="relative">
-        <button @click="show = !show" class="btn toggle-pass" type="button">
-          Changer votre mot de passe
-        </button>
-        <label v-if="show" for="password">Mot de passe</label>
-        <div v-if="show" class="eyed">
+    <div class="container">
+      <return-block title="Modifier votre profil" />
+      <form
+        role="form"
+        v-if="!isModified"
+        @submit.prevent="modifyProfile"
+        @input="verify"
+        novalidate
+      >
+        <avatar-profile @avatar-change="avatarChange" />
+        <div class="relative">
+          <label for="email">Adresse email</label>
           <input
-            aria-label="éditer votre mot de passe"
-            :type="visible ? 'text' : 'password'"
-            id="password"
-            name="password"
-            v-model="password"
+            aria-label="éditer votre adresse email"
+            type="email"
+            id="email"
+            name="email"
+            v-model="email"
             @focus="
-              isPasswordFocused = true;
+              isEmailFocused = true;
               verify();
             "
             @blur="
-              isPasswordFocused = false;
+              isEmailFocused = false;
               verify();
             "
-            :class="classPassword"
+            :class="classEmail"
           />
-
-          <button type="button" @click="visible = !visible">
-            <i v-if="visible" class="fas fa-eye-slash"></i>
-            <i v-else class="fas fa-eye"></i>
+          <transition name="fade">
+            <div v-if="isEmailTooltipVisible" class="tooltip">
+              <div>
+                <ul>
+                  <li :class="classEmail">
+                    L'adresse email est
+                    {{ verifyEmail ? "correcte" : "incorrecte" }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </transition>
+        </div>
+        <div class="relative">
+          <label for="firstname">Prénom</label>
+          <input
+            aria-label="éditer votre prénom"
+            type="text"
+            id="firstname"
+            name="firstname"
+            v-model="firstname"
+            @focus="
+              isFirstNameFocused = true;
+              verify();
+            "
+            @blur="
+              isFirstNameFocused = false;
+              verify();
+            "
+            :class="classFirstName"
+          />
+          <transition name="fade">
+            <div v-if="isFirstNameTooltipVisible" class="tooltip">
+              <div>
+                <ul>
+                  <li :class="classFirstName">
+                    Veuillez saisir un prénom correct
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </transition>
+        </div>
+        <div class="relative">
+          <label for="lastname">Nom</label>
+          <input
+            aria-label="éditer votre nom"
+            type="text"
+            id="lastname"
+            name="lastname"
+            v-model="lastname"
+            @focus="
+              isLastNameFocused = true;
+              verify();
+            "
+            @blur="
+              isLastNameFocused = false;
+              verify();
+            "
+            :class="classLastName"
+          />
+          <transition name="fade">
+            <div v-if="isLastNameTooltipVisible" class="tooltip">
+              <div>
+                <ul>
+                  <li :class="classLastName">Veuillez saisir un nom correct</li>
+                </ul>
+              </div>
+            </div>
+          </transition>
+        </div>
+        <div class="relative">
+          <button @click="show = !show" class="btn toggle-pass" type="button">
+            Changer votre mot de passe
+          </button>
+          <label v-if="show" for="password">Mot de passe</label>
+          <div v-if="show" class="eyed">
+            <input
+              aria-label="éditer votre mot de passe"
+              :type="visible ? 'text' : 'password'"
+              id="password"
+              name="password"
+              v-model="password"
+              @focus="
+                isPasswordFocused = true;
+                verify();
+              "
+              @blur="
+                isPasswordFocused = false;
+                verify();
+              "
+              :class="classPassword"
+            />
+            <button type="button" @click="visible = !visible">
+              <i v-if="visible" class="fas fa-eye-slash"></i>
+              <i v-else class="fas fa-eye"></i>
+            </button>
+          </div>
+          <transition name="fade">
+            <div v-if="isPasswordTooltipVisible" class="tooltip">
+              <div>
+                <div>Le mot de passe doit contenir&nbsp;:</div>
+                <ul>
+                  <li :class="classMin">
+                    {{ constains.min }} caractères minimum
+                  </li>
+                  <li v-if="constains.bothcase" :class="classCase">
+                    Lettres majuscules et minuscules
+                  </li>
+                  <li v-if="constains.digits" :class="classDigits">
+                    Au moins un chiffre
+                  </li>
+                  <li v-if="constains.symbols" :class="classSymbols">
+                    Au moins un caractère spécial
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </transition>
+        </div>
+        <div class="contain-button-register">
+          <button class="btn" type="submit" :disabled="!isValidRegister">
+            Enregistrer vos modifications
           </button>
         </div>
-        <transition name="fade">
-          <div v-if="isPasswordTooltipVisible" class="tooltip">
-            <div>
-              <div>Le mot de passe doit contenir&nbsp;:</div>
-              <ul>
-                <li :class="classMin">
-                  {{ constains.min }} caractères minimum
-                </li>
-                <li v-if="constains.bothcase" :class="classCase">
-                  Lettres majuscules et minuscules
-                </li>
-                <li v-if="constains.digits" :class="classDigits">
-                  Au moins un chiffre
-                </li>
-                <li v-if="constains.symbols" :class="classSymbols">
-                  Au moins un caractère spécial
-                </li>
-              </ul>
-            </div>
-          </div>
-        </transition>
-      </div>
-
-      <div class="contain-button-register">
-        <button class="btn" type="submit" :disabled="!isValidRegister">
-          Enregistrer vos modifications
-        </button>
-      </div>
-      <div class="return">
-        <router-link to="/"><i class="fa-solid fa-arrow-left"></i></router-link>
-      </div>
-    </form>
-    <transition name="fade">
-      <alert-message
-        v-if="isModified || alert.type"
-        :message="alert.message"
-        :type="alert.type"
-      />
-    </transition>
+      </form>
+      <transition name="fade">
+        <alert-message
+          v-if="isModified || alert.type"
+          :message="alert.message"
+          :type="alert.type"
+        />
+      </transition>
+    </div>
   </main>
 </template>
 
 <script>
 import passwordValidator from "password-validator";
 import AlertMessage from "@/components/AlertMessage.vue";
-import NavbarNavigation from "@/components/NavbarNavigation.vue";
 import AvatarProfile from "@/components/AvatarProfile.vue";
+import ReturnBlock from "@/components/ReturnBlock.vue";
 const constains = {
   min: 8,
   max: 64,
@@ -211,7 +203,7 @@ if (constains.symbols) {
   passValidator.has().symbols();
 }
 export default {
-  components: { AlertMessage, NavbarNavigation, AvatarProfile },
+  components: { AlertMessage, AvatarProfile, ReturnBlock },
 
   data() {
     return {
@@ -323,9 +315,6 @@ export default {
     avatarChange(file) {
       this.file = file;
     },
-    redirect() {
-      this.$router.push({ path: "/" });
-    },
     fieldCheck(field) {
       return !this.details.some(e => e.validation === field);
     },
@@ -345,7 +334,7 @@ export default {
       fd.set("firstname", this.firstname);
       fd.set("lastname", this.lastname);
       fd.set("email", this.email);
-      if(this.password.length > 0) fd.set("password", this.password);
+      if (this.password.length > 0) fd.set("password", this.password);
       if (this.file) fd.set("file", this.file);
       this.fetch("/users/me", {
         method: "PUT",
@@ -358,7 +347,7 @@ export default {
           this.alert.type = "error";
           return;
         }
-        this.$store.commit("setToken", data.token)
+        this.$store.commit("setToken", data.token);
         this.alert.message = "Votre compte a bien été mise à jour";
         this.alert.type = "success";
         this.isModified = true;
@@ -377,8 +366,8 @@ export default {
 @import "@/assets/scss/_signinup.scss";
 @import "@/assets/scss/_mixins.scss";
 
-.return {
-  align-items: flex-start;
+.container {
+  max-width: 450px;
 }
 .fa-arrow-left {
   font-size: 2rem;

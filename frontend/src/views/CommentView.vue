@@ -1,6 +1,5 @@
 <template>
   <main role="main">
-    <navbar-navigation />
     <div class="container">
       <return-block title="Commentaires" />
       <post-publish v-if="post" :post="post" />
@@ -33,14 +32,12 @@
 
 <script>
 import CommentPublish from "@/components/CommentPublish.vue";
-import NavbarNavigation from "@/components/NavbarNavigation.vue";
 import ReturnBlock from "@/components/ReturnBlock.vue";
 import PostPublish from "@/components/PostPublish.vue";
 import AvatarUser from "@/components/AvatarUser.vue";
 export default {
   components: {
     CommentPublish,
-    NavbarNavigation,
     ReturnBlock,
     PostPublish,
     AvatarUser,
@@ -54,6 +51,7 @@ export default {
   },
   methods: {
     changeHeight(e) {
+      e.target.style.height = "auto";
       e.target.style.height = e.target.scrollHeight + "px";
     },
     verifyMsg() {
@@ -105,6 +103,7 @@ export default {
 @import "@/assets/scss/_mixins.scss";
 @import "@/assets/scss/_variables.scss";
 .add-comment {
+  transition: border-radius 0.3s, margin 0.3s;
   @include flex-justi-align;
   padding: 0.7rem;
   background-color: $tertiary;
@@ -131,8 +130,10 @@ export default {
     }
   }
 }
+
 @media screen and (min-width: 700px) {
   .add-comment {
+    margin: 1rem 0;
     border-radius: 1.5rem;
   }
 }

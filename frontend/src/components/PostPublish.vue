@@ -23,17 +23,30 @@
       <div class="footer-group-icon">
         <div class="footer-left-icon">
           <div>
-            <router-link :to="{ path: `/posts/${post.id}/comments` }" tabindex="2">
+            <router-link
+              :to="{ path: `/posts/${post.id}/comments` }"
+              tabindex="2"
+            >
               <i class="fa-solid fa-comment-dots"></i>
               {{ post.commentsCount }}
             </router-link>
-            </div>
+          </div>
           <!-- <i class="fa-solid fa-thumbs-up"></i> -->
           <like-add-to-post tabindex="2" :post="post" />
         </div>
         <div v-if="isEditable" class="footer-right-icon">
-          <router-link :to="{ name: 'posts-modify', params: { id: post.id } }"><i class="fa-solid fa-pen" tabindex="2" aria-label="icone d'édition du poste"></i></router-link>
-          <i class="fa-solid fa-trash-can" tabindex="2" aria-label="icone de suppréssion du poste"></i>
+          <router-link :to="{ name: 'posts-modify', params: { id: post.id } }"
+            ><i
+              class="fa-solid fa-pen"
+              tabindex="2"
+              aria-label="icone d'édition du poste"
+            ></i
+          ></router-link>
+          <i
+            class="fa-solid fa-trash-can"
+            tabindex="2"
+            aria-label="icone de suppréssion du poste"
+          ></i>
         </div>
       </div>
     </div>
@@ -68,8 +81,8 @@ export default {
 @import "@/assets/scss/_mixins.scss";
 
 .post-card {
-  border-radius: 1rem;
   overflow: hidden;
+  transition: border-radius 0.3s;
   box-shadow: 0.25rem 0.75rem 1.25rem rgb(black, 0.19),
     0 0.25rem 0.5rem rgb(black, 0.23);
   .hearder-post-card {
@@ -118,17 +131,21 @@ export default {
         padding: $usePadding;
         display: flex;
         gap: 1rem;
+        a {
+          text-decoration: none;
+          display: block;
+        }
         i {
           font-size: 1.5rem;
         }
       }
-      .footer-left-icon > div{
-        a {
-          text-decoration: none;
-        }
-      }
-
     }
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .post-card {
+    border-radius: 1rem;
   }
 }
 </style>

@@ -26,6 +26,7 @@ export default {
 header {
   display: flex;
   padding: 1rem;
+  gap: 1rem;
   justify-content: space-between;
   align-items: center;
   &::after {
@@ -33,6 +34,7 @@ header {
     content: "";
   }
   .icon-arrow {
+    min-width: 2rem;
     width: 2rem;
     aspect-ratio: 1/1;
     @include flex-justi-align;

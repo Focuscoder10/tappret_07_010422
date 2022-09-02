@@ -1,18 +1,29 @@
 <template>
-  <div class="alert" :class="type">
+  <div v-show="show" class="alert" :class="type">
     <i class="fa-regular" :class="icon"></i>
     {{ message }}
+    <a role="button" class="hide" @click="hide">
+      <i class="fa-solid fa-xmark"></i>
+    </a>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    message: String,
+    message: {
+      type: String,
+      default: "Message",
+    },
     type: {
       type: String,
       default: "success",
     },
+  },
+  data() {
+    return {
+      show: true,
+    };
   },
   computed: {
     icon() {
@@ -27,12 +38,20 @@ export default {
       return classList;
     },
   },
+  methods: {
+    hide() {
+      this.show = false;
+      this.$emit("hide-dialog");
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/_variables.scss";
 .alert {
+  max-width: 700px;
+  background-color: white;
   border-radius: 0.5rem;
   margin: 1rem;
   padding: 1rem;
@@ -49,6 +68,14 @@ export default {
   }
   &.error i {
     color: red;
+  }
+  .hide {
+    margin-left: 1rem;
+    align-self: flex-start;
+    i {
+      color: $tertiary;
+      font-size: 1.5em;
+    }
   }
 }
 </style>

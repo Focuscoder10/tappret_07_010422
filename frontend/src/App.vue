@@ -1,26 +1,46 @@
 <template>
   <div id="app">
-    <!-- <nav-block v-if="isLoginForm()" /> -->
+    <navbar-navigation v-if="showNav" />
     <router-view />
     <footer-block />
+    <div v-show="showDialog" class="dialog">
+      <alert-message @hide-dialog="hideDialog" />
+    </div>
   </div>
 </template>
 
 <script>
+import NavbarNavigation from "@/components/NavbarNavigation.vue";
 import FooterBlock from "./components/FooterBlock.vue";
-// import NavBlock from "./components/NavBlock.vue";
+import AlertMessage from "./components/AlertMessage.vue";
 export default {
   components: {
     FooterBlock,
-    // NavBlock,
+    NavbarNavigation,
+    AlertMessage,
+  },
+  data() {
+    return {
+      showNav: false,
+      showDialog: false,
+    };
   },
   methods: {
-    isLoginForm() {
-      return this.$router.history.current["path"] !== "/register";
+    checkNav(to) {
+      this.showNav = !["login", "register"].includes(to.name);
+    },
+    hideDialog() {
+      this.showDialog = false;
     },
   },
   created() {
+    if (this.$route.name) this.checkNav(this.$route);
     this.$store.commit("setToken", localStorage.getItem("token"));
+  },
+  watch: {
+    $route(to) {
+      this.checkNav(to);
+    },
   },
 };
 </script>
@@ -33,6 +53,12 @@ body {
   font-family: Lato, sans-serif;
   margin: 0;
   color: $tertiary;
+}
+
+:focus-visible {
+  outline: 0.125rem solid $primary;
+  outline-offset: 0.25rem;
+  border-radius: 0.25rem;
 }
 
 *,
@@ -74,7 +100,7 @@ select {
   &[name="password"] {
     position: relative;
   }
-  &:focus{
+  &:focus {
     outline-width: 0.25rem;
   }
   &.success {
@@ -127,9 +153,11 @@ select {
   display: flex;
   flex-direction: column;
 }
-i{
+
+i {
   cursor: pointer;
 }
+
 .img-profil {
   $size: 40px;
   height: $size;
@@ -146,18 +174,19 @@ i{
 }
 .btn {
   padding: 0.5rem 1.2rem;
-  background-color: darken($primary, 10%);
-  border: 1px solid darken($primary, 20%);
+  background-color: $primary;
+  border: 1px solid darken($primary, 10%);
   color: white;
   border-radius: 0.5rem;
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s;
-  &:hover:not(:disabled),&:focus:not(:disabled) {
+  &:hover:not(:disabled),
+  &:focus:not(:disabled) {
     color: white;
     box-shadow: $shadow;
     transform: translateY(-3px);
-    background-color: $primary;
+    background-color: lighten($primary, 10%);
   }
   &.tertiary {
     background-color: $tertiary;
@@ -172,5 +201,20 @@ i{
   &:disabled {
     opacity: 0.5;
   }
+}
+</style>
+
+<style lang="scss" scoped>
+@import "./src/assets/scss/_variables.scss";
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb($tertiary, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

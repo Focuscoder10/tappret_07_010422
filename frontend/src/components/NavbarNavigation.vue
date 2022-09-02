@@ -48,6 +48,11 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/scss/_variables.scss";
+
+:focus-visible {
+outline-color: white;
+}
+
 nav {
   // margin: 0 1rem;
   color: white;
