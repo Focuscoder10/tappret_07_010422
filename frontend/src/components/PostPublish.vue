@@ -43,6 +43,7 @@
             ></i
           ></router-link>
           <i
+            @click="deletePost"
             class="fa-solid fa-trash-can"
             tabindex="2"
             aria-label="icone de suppréssion du poste"
@@ -57,14 +58,26 @@
 import LikeAddToPost from "@/components/LikeAddToPost.vue";
 import DateTime from "@/components/DateTime.vue";
 import AvatarUser from "./AvatarUser.vue";
+const scheme = /^https?:\/\//;
 export default {
   components: { LikeAddToPost, DateTime, AvatarUser },
   props: {
     post: Object,
   },
+  methods: {
+    deletePost() {
+      this.fetch("/posts/" + this.post.id, {
+        method: "DELETE",
+      }).then(res => {
+        if (res.status === 200) this.$emit("delete-post", this.post);
+      });
+    },
+  },
   computed: {
     mediaSrc() {
-      return this.$store.state.apiUrl + "/upload/" + this.post.media;
+      return scheme.test(this.post.media)
+        ? this.post.media
+        : this.$store.state.apiUrl + "/upload/" + this.post.media;
     },
     isEditable() {
       return (

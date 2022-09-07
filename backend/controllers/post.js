@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const { Post, User, Comment, sequelize } = require("../models");
 
 exports.create = async (req, res) => {
@@ -84,7 +85,6 @@ exports.get = async (req, res) => {
         ],
       },
       bind: [req.auth.user.id],
-
     });
     if (!post) return res.status(404).json({ error: "Post Not Found" });
     res.status(200).json(post);
@@ -116,8 +116,13 @@ exports.modify = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const array = await Post.destroy({ where: { id: req.params.id } });
-    if (!array.length) return res.status(404).json({ error: "Post Not Found" });
+    const post = await Post.findByPk(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post Not Found" });
+    if (!req.auth.user.isModerator && req.auth.user.id !== post.userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    await post.destroy();
+    fs.unlinkSync(path.join(__dirname, "..", "upload", post.media));
     res.status(200).json({ message: "Post Deleted" });
   } catch (e) {
     console.error(e);

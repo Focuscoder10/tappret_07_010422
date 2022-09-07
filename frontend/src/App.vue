@@ -3,34 +3,25 @@
     <navbar-navigation v-if="showNav" />
     <router-view />
     <footer-block />
-    <div v-show="showDialog" class="dialog">
-      <alert-message @hide-dialog="hideDialog" />
-    </div>
   </div>
 </template>
 
 <script>
 import NavbarNavigation from "@/components/NavbarNavigation.vue";
 import FooterBlock from "./components/FooterBlock.vue";
-import AlertMessage from "./components/AlertMessage.vue";
 export default {
   components: {
     FooterBlock,
     NavbarNavigation,
-    AlertMessage,
   },
   data() {
     return {
       showNav: false,
-      showDialog: false,
     };
   },
   methods: {
     checkNav(to) {
       this.showNav = !["login", "register"].includes(to.name);
-    },
-    hideDialog() {
-      this.showDialog = false;
     },
   },
   created() {
@@ -201,20 +192,5 @@ i {
   &:disabled {
     opacity: 0.5;
   }
-}
-</style>
-
-<style lang="scss" scoped>
-@import "./src/assets/scss/_variables.scss";
-.dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgb($tertiary, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

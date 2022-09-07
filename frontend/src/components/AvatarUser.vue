@@ -10,6 +10,7 @@
 </template>
 
 <script>
+const scheme = /^https?:\/\//;
 export default {
   props: {
     avatar: String,
@@ -17,7 +18,9 @@ export default {
   computed: {
     url() {
       if (this.avatar) {
-        return this.$store.state.apiUrl + "/upload/" + this.avatar;
+        return scheme.test(this.avatar)
+          ? this.avatar
+          : this.$store.state.apiUrl + "/upload/" + this.avatar;
       }
       return null;
     },

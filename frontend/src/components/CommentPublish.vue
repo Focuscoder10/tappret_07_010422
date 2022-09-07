@@ -25,6 +25,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/scss/_variables.scss";
 .comment {
+  
   display: flex;
   padding: 0.7rem;
   gap: 1rem;
@@ -32,6 +33,9 @@ export default {
     border-bottom: 1px solid lighten($tertiary, 50%);
   }
   .authmsg {
+    .msg{
+      margin-bottom: 0.5rem;
+    }
     .name {
       font-weight: bold;
       margin-bottom: $usePadding;

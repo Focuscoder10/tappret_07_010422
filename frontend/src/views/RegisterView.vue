@@ -344,4 +344,8 @@ export default {
 <style lang="scss" scoped>
 @import "@/assets/scss/_variables.scss";
 @import "@/assets/scss/_signinup.scss";
+
+.alert {
+  margin: auto;
+}
 </style>

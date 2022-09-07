@@ -136,13 +136,13 @@ export default {
     flex-direction: row;
     svg {
       &:first-child {
-        width: 2.34rem;
+        height: 2.34rem;
         g {
           fill: white;
         }
       }
       &:last-child {
-        max-height: 2rem;
+        height: 2.34rem;
         padding-top: 0.3rem;
         g {
           fill: white;

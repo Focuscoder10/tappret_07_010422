@@ -1,7 +1,7 @@
 <template>
   <main role="main">
     <div class="container-post container" @posts-refresh="$forceUpdate()">
-      <post-publish v-for="post of posts" :post="post" :key="post.id" />
+      <post-publish v-for="post of posts" :post="post" :key="post.id" @delete-post="deletePost" />
     </div>
     <new-post-button />
   </main>
@@ -17,6 +17,11 @@ export default {
     return {
       posts: [],
     };
+  },
+  methods: {
+    deletePost(post){
+      this.posts.splice(this.posts.indexOf(post), 1)
+    }
   },
   created() {
     this.fetch("/posts").then(async posts => {
