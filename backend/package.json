@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server"
+    "start": "nodemon server",
+    "seed": "npx sequelize-cli db:seed:undo && npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -16,5 +17,8 @@
     "mysql2": "^2.3.3",
     "password-validator": "^5.2.1",
     "sequelize": "^6.21.4"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.5.0"
   }
 }

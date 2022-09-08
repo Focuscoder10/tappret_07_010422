@@ -135,18 +135,12 @@ export default {
   &.navbar {
     flex-direction: row;
     svg {
-      &:first-child {
-        height: 2.34rem;
-        g {
-          fill: white;
-        }
+      height: 2.34rem;
+      g {
+        fill: white;
       }
       &:last-child {
-        height: 2.34rem;
         padding-top: 0.3rem;
-        g {
-          fill: white;
-        }
       }
     }
   }

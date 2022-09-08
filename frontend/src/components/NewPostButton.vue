@@ -1,5 +1,7 @@
 <template>
-  <router-link to="/posts/create" class="button-create"><i class="fa-solid fa-plus"></i></router-link>
+  <router-link to="/posts/create" class="button-create">
+    <i class="fa-solid fa-plus"></i>
+  </router-link>
 </template>
 
 <style lang="scss" scoped>
@@ -19,8 +21,6 @@
   text-decoration: none;
   i {
     font-size: 2rem;
-    
-  
   }
 }
 </style>

@@ -22,17 +22,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "./src/assets/scss/_variables.scss";
-  .dialog {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgb($tertiary, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  </style>
-  
+@import "./src/assets/scss/_variables.scss";
+.dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb($tertiary, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

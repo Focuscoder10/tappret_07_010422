@@ -7,13 +7,7 @@
 </template>
 
 <script>
-import { defineComponent } from "@vue/composition-api";
-
-export default {
-  name: SubmitPage,
-  props: string,
-  methods: {},
-};
+export default {};
 </script>
 
 <style lang="scss" scoped></style>

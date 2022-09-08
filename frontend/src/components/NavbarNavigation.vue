@@ -50,11 +50,10 @@ export default {
 @import "@/assets/scss/_variables.scss";
 
 :focus-visible {
-outline-color: white;
+  outline-color: white;
 }
 
 nav {
-  // margin: 0 1rem;
   color: white;
   background-color: $primary;
   padding: $usePadding;
@@ -69,8 +68,6 @@ nav {
     }
   }
   .menu {
-    // max-height: 0;
-    // overflow: hidden;
     margin: 0;
     list-style: none;
     padding: 0;
@@ -78,14 +75,10 @@ nav {
     flex-direction: column;
     padding-top: $usePadding;
     gap: $useGap;
-    // &.show {
-    //   max-height: none;
-    // }
     li > i {
       font-size: 2rem;
       width: 2rem;
       margin-right: 0.3rem;
-      // margin-left: .3rem;
     }
     a {
       text-decoration: none;

@@ -137,12 +137,12 @@ export default {
           return;
         }
         try {
-          this.$store.commit("setToken",data.token)
-        }catch(e){
+          this.$store.commit("setToken", data.token);
+        } catch (e) {
           this.message = e.message;
           return;
         }
-        this.$router.push({ path: "/"});
+        this.$router.push({ path: "/" });
       });
     },
   },

@@ -1,6 +1,11 @@
 <template>
   <header class="container">
-    <div @click="historyBack" @keydown="historyBack" tabindex="1" class="icon-arrow">
+    <div
+      @click="historyBack"
+      @keydown="historyBack"
+      tabindex="1"
+      class="icon-arrow"
+    >
       <i class="fa-solid fa-angle-left"></i>
     </div>
     <h1>{{ title }}</h1>
@@ -12,13 +17,13 @@ export default {
   props: {
     title: String,
   },
-   methods: {
+  methods: {
     historyBack(e) {
       if ((e.type === "keydown" && e.key === "Enter") || e.type === "click")
-      this.$router.back();
+        this.$router.back();
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

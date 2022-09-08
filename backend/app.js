@@ -1,7 +1,7 @@
 /**
  * importations bibliothèques et fichier configuration
  */
-require('dotenv').config()
+require("dotenv").config();
 const express = require("express");
 const { sequelize } = require("./models");
 const helmet = require("helmet");

@@ -34,5 +34,4 @@ module.exports = {
   Post,
   User,
   Comment,
-  // Like
 };

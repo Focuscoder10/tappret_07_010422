@@ -64,7 +64,7 @@ module.exports = sequelize => {
       lastname: this.lastname,
       email: this.email,
       avatar: this.avatar,
-      isModerator: this.isModerator
+      isModerator: this.isModerator,
     };
     return jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "24h",

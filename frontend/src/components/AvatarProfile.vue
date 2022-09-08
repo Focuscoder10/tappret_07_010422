@@ -8,28 +8,34 @@
         :accept="types.join(',')"
       />
       <div class="img-profil size">
-        <img :src="newImg || avatar || defaultImg" alt="Avatar de l'utilisateur" />
+        <img
+          :src="newImg || avatar || defaultImg"
+          alt="Avatar de l'utilisateur"
+        />
       </div>
-      <div class="change" aria-label="éditer votre avatar">Changer de photo</div>
+      <div class="change" aria-label="éditer votre avatar">
+        Changer de photo
+      </div>
     </label>
   </div>
 </template>
 
 <script>
 import defaultImg from "@/assets/images/avatar.png";
+const scheme = /^https?:\/\//;
 export default {
   data() {
     return {
       file: null,
       newImg: null,
       types: ["image/jpeg", "image/png", "image/gif"],
-      defaultImg
+      defaultImg,
     };
   },
-  
+
   methods: {
     onKeydown(e) {
-      if(e.key==="Enter")this.$refs.file.click();
+      if (e.key === "Enter") this.$refs.file.click();
     },
     changeFile() {
       if (this.$refs.file.files.length > 0) {
@@ -48,11 +54,14 @@ export default {
   computed: {
     avatar() {
       const state = this.$store.state;
-      if(state.user.avatar){
-        return state.apiUrl + "/upload/" + state.user.avatar
-      }return null;
+      if (state.user.avatar) {
+        return scheme.test(state.user.avatar)
+          ? state.user.avatar
+          : this.$store.state.apiUrl + "/upload/" + state.user.avatar;
+      }
+      return null;
     },
-  }
+  },
 };
 </script>
 
@@ -62,10 +71,10 @@ export default {
 @import "@/assets/scss/_signinup.scss";
 @import "@/assets/scss/_mixins.scss";
 .middle-img {
-  label{
-  @include flex-justi-align;
-  flex-direction: column;
-  cursor: pointer;
+  label {
+    @include flex-justi-align;
+    flex-direction: column;
+    cursor: pointer;
   }
   .change {
     padding: $usePadding;

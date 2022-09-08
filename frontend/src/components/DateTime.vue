@@ -1,9 +1,10 @@
 <template>
-<time :title="absoluteTime" :datetime="absoluteTime">{{ relativedDate }}</time>
+  <time :title="absoluteTime" :datetime="absoluteTime">
+    {{ relativedDate }}
+  </time>
 </template>
 
 <script>
-
 export default {
   props: {
     time: String,
@@ -11,14 +12,14 @@ export default {
 
   computed: {
     myMoment() {
-      return this.moment(this.time)
+      return this.moment(this.time);
     },
-    relativedDate(){
-      return this.myMoment.fromNow()
+    relativedDate() {
+      return this.myMoment.fromNow();
     },
     absoluteTime() {
-      return this.myMoment.format("dddd d MMMM, à H:mm")
-    }
-  }
-}
+      return this.myMoment.format("dddd d MMMM, à H:mm");
+    },
+  },
+};
 </script>

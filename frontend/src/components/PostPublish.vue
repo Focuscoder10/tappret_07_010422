@@ -31,17 +31,16 @@
               {{ post.commentsCount }}
             </router-link>
           </div>
-          <!-- <i class="fa-solid fa-thumbs-up"></i> -->
           <like-add-to-post tabindex="2" :post="post" />
         </div>
         <div v-if="isEditable" class="footer-right-icon">
-          <router-link :to="{ name: 'posts-modify', params: { id: post.id } }"
-            ><i
+          <router-link :to="{ name: 'posts-modify', params: { id: post.id } }">
+            <i
               class="fa-solid fa-pen"
               tabindex="2"
               aria-label="icone d'édition du poste"
-            ></i
-          ></router-link>
+            ></i>
+          </router-link>
           <i
             @click="deletePost"
             class="fa-solid fa-trash-can"

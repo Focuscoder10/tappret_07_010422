@@ -1,7 +1,8 @@
 <template>
   <main role="main">
     <logo-login />
-    <form role="form"
+    <form
+      role="form"
       v-if="!isRegistered"
       @submit.prevent="register"
       @input="verify"
