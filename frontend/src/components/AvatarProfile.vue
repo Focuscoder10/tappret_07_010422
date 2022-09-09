@@ -57,7 +57,7 @@ export default {
       if (state.user.avatar) {
         return scheme.test(state.user.avatar)
           ? state.user.avatar
-          : this.$store.state.apiUrl + "/upload/" + state.user.avatar;
+          : `${this.$store.getters.apiUrl}/upload/${state.user.avatar}`;
       }
       return null;
     },

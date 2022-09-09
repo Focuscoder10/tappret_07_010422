@@ -76,7 +76,7 @@ export default {
     mediaSrc() {
       return scheme.test(this.post.media)
         ? this.post.media
-        : this.$store.state.apiUrl + "/upload/" + this.post.media;
+        : `${this.$store.getters.apiUrl}/upload/${this.post.media}`;
     },
     isEditable() {
       return (

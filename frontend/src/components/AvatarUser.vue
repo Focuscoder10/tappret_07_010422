@@ -20,7 +20,7 @@ export default {
       if (this.avatar) {
         return scheme.test(this.avatar)
           ? this.avatar
-          : this.$store.state.apiUrl + "/upload/" + this.avatar;
+          : `${this.$store.getters.apiUrl}/upload/${this.avatar}`;
       }
       return null;
     },

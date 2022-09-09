@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <navbar-navigation v-if="showNav" />
+  <div id="app" @click="onClick">
+    <navbar-navigation v-if="showNav" ref="nav" />
     <router-view />
     <footer-block />
   </div>
@@ -22,6 +22,9 @@ export default {
   methods: {
     checkNav(to) {
       this.showNav = !["login", "register"].includes(to.name);
+    },
+    onClick(e) {
+      if (this.$refs.nav) this.$refs.nav.onClick(e);
     },
   },
   created() {
@@ -141,6 +144,7 @@ select {
 
 #app {
   min-height: 100vh;
+  margin-top: 54px;
   display: flex;
   flex-direction: column;
 }

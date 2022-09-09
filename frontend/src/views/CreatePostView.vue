@@ -74,7 +74,7 @@ export default {
       const data = await post.json();
       this.title = data.title;
       this.content = data.content;
-      this.img = this.$store.state.apiUrl + "/upload/" + data.media;
+      this.img = `${this.$store.getters.apiUrl}/upload/${data.media}`;
       this.isEdit = true;
     });
   },

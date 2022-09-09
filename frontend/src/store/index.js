@@ -20,10 +20,7 @@ Vue.mixin({
       if (this.$store.state.token) {
         obj.headers.Authorization = "Bearer " + this.$store.state.token;
       }
-      return fetch(
-        this.$store.state.apiUrl + this.$store.state.apiPath + resource,
-        obj
-      );
+      return fetch(`${this.$store.getters.apiUrl}/api${resource}`, obj);
     },
   },
 });
@@ -32,10 +29,13 @@ Vue.prototype.moment = moment;
 
 export default new Vuex.Store({
   state: {
-    apiUrl: "http://localhost:3000",
-    apiPath: "/api",
     token: null,
     user: null,
+  },
+  getters: {
+    apiUrl() {
+      return `http://${location.hostname}:3000`;
+    },
   },
   mutations: {
     setToken(state, token) {

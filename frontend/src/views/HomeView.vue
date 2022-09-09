@@ -7,6 +7,7 @@
         :key="post.id"
         @delete-post="deletePost"
       />
+      <div ref="target"></div>
     </div>
     <new-post-button />
   </main>
@@ -21,21 +22,39 @@ export default {
   data() {
     return {
       posts: [],
+      page: 1,
+      observer: null,
+      observe: false,
     };
   },
   methods: {
     deletePost(post) {
       this.posts.splice(this.posts.indexOf(post), 1);
     },
-  },
-  created() {
-    this.fetch("/posts").then(async posts => {
+    async getNextPage() {
+      const search = new URLSearchParams({ page: this.page });
+      const posts = await this.fetch("/posts?" + search);
       if (posts.status !== 200) {
         this.$router.push({ path: "/login" });
         return;
       }
-      this.posts = await posts.json();
+      this.posts.push(...(await posts.json()));
+      if (!this.observe) {
+        this.observer.observe(this.$refs.target);
+        this.observe = true;
+      }
+      this.page++;
+    },
+    async intersect(e) {
+      if (e[0].isIntersecting) await this.getNextPage();
+    },
+  },
+  async created() {
+    this.observer = new IntersectionObserver(this.intersect, {
+      root: null,
+      threshold: 1,
     });
+    await this.getNextPage();
   },
 };
 </script>

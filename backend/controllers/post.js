@@ -22,9 +22,14 @@ exports.create = async (req, res) => {
 
 exports.list = async (req, res) => {
   try {
+    const perPage = 10;
+    const int = parseInt(req.query.page, 10);
+    const page = Number.isNaN(int) || int < 1 ? 1 : int;
     const posts = await Post.findAll({
       include: [User],
       order: [["createdAt", "DESC"]],
+      limit: perPage,
+      offset: perPage * (page - 1),
       attributes: {
         include: [
           [
