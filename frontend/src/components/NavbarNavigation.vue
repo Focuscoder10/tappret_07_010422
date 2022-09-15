@@ -3,12 +3,7 @@
     <div class="container">
       <div class="navbar">
         <logo-login type="navbar" tabindex="1" />
-        <i
-          tabindex="1"
-          @keydown="toggleMenu"
-          @click="toggleMenu"
-          class="fa-solid fa-bars"
-        ></i>
+        <i tabindex="1" @keydown="toggleMenu" @click="toggleMenu" class="fa-solid fa-bars"></i>
       </div>
       <transition name="height">
         <ul v-show="show" class="menu">
@@ -31,7 +26,7 @@
 </template>
 
 <script>
-import LogoLogin from "@/components/LogoLogin.vue";
+import LogoLogin from '@/components/LogoLogin.vue';
 export default {
   components: { LogoLogin },
   data() {
@@ -41,11 +36,10 @@ export default {
   },
   methods: {
     toggleMenu(e) {
-      if ((e.type === "keydown" && e.key === "Enter") || e.type === "click")
-        this.show = !this.show;
+      if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') this.show = !this.show;
     },
-    onClick(e) {
-      if (!e.target.closest("nav")) this.show = false;
+    closeMenu() {
+      this.show = false;
     },
   },
   watch: {
@@ -57,7 +51,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/_variables.scss";
+@import '@/assets/scss/_variables.scss';
 
 :focus-visible {
   outline-color: white;
@@ -67,8 +61,7 @@ nav {
   position: fixed;
   width: 100%;
   top: 0;
-  box-shadow: 0 0.25rem 1rem rgb(black, 0.19),
-    0 0.125rem 0.5rem rgb(black, 0.23);
+  box-shadow: 0 0.25rem 1rem rgb(black, 0.19), 0 0.125rem 0.5rem rgb(black, 0.23);
   color: white;
   background-color: $primary;
   padding: $usePadding;

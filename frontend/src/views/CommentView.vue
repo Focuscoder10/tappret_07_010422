@@ -20,22 +20,24 @@
         </form>
       </div>
       <div v-if="post" class="comments">
-        <comment-publish
-          v-for="comment of comments"
-          :key="comment.id"
-          :comment="comment"
-        />
+        <comment-publish v-for="comment of comments" :key="comment.id" :comment="comment" />
       </div>
     </div>
   </main>
 </template>
 
 <script>
-import CommentPublish from "@/components/CommentPublish.vue";
-import ReturnBlock from "@/components/ReturnBlock.vue";
-import PostPublish from "@/components/PostPublish.vue";
-import AvatarUser from "@/components/AvatarUser.vue";
+import CommentPublish from '@/components/CommentPublish.vue';
+import ReturnBlock from '@/components/ReturnBlock.vue';
+import PostPublish from '@/components/PostPublish.vue';
+import AvatarUser from '@/components/AvatarUser.vue';
 export default {
+  metaInfo() {
+    const title = this.post ? this.post.title : 'Commentaires';
+    return {
+      title: `Commentaires de ${title}`,
+    };
+  },
   components: {
     CommentPublish,
     ReturnBlock,
@@ -46,22 +48,22 @@ export default {
     return {
       post: null,
       comments: [],
-      msg: "",
+      msg: '',
     };
   },
   methods: {
     changeHeight(e) {
-      e.target.style.height = "auto";
-      e.target.style.height = e.target.scrollHeight + "px";
+      e.target.style.height = 'auto';
+      e.target.style.height = e.target.scrollHeight + 'px';
     },
     verifyMsg() {
       if (this.isNotValid) {
         return;
       }
-      this.fetch("/posts/" + this.$route.params.id + "/comments", {
-        method: "POST",
+      this.fetch('/posts/' + this.$route.params.id + '/comments', {
+        method: 'POST',
         body: JSON.stringify({ content: this.msg }),
-      }).then(res => {
+      }).then((res) => {
         if (res.status !== 201) {
           return;
         }
@@ -85,9 +87,9 @@ export default {
     },
   },
   created() {
-    this.fetch("/posts/" + this.$route.params.id).then(async post => {
+    this.fetch('/posts/' + this.$route.params.id).then(async (post) => {
       if (post.status !== 200) {
-        this.$router.push({ path: "/login" });
+        this.$router.push({ path: '/login' });
         return;
       }
       const data = await post.json();
@@ -100,8 +102,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/_mixins.scss";
-@import "@/assets/scss/_variables.scss";
+@import '@/assets/scss/_mixins.scss';
+@import '@/assets/scss/_variables.scss';
 .add-comment {
   transition: border-radius 0.3s, margin 0.3s;
   @include flex-justi-align;

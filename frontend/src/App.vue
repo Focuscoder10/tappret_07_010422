@@ -7,9 +7,12 @@
 </template>
 
 <script>
-import NavbarNavigation from "@/components/NavbarNavigation.vue";
-import FooterBlock from "./components/FooterBlock.vue";
+import NavbarNavigation from '@/components/NavbarNavigation.vue';
+import FooterBlock from './components/FooterBlock.vue';
 export default {
+  metaInfo: {
+    titleTemplate: '%s - Groupomania',
+  },
   components: {
     FooterBlock,
     NavbarNavigation,
@@ -21,15 +24,15 @@ export default {
   },
   methods: {
     checkNav(to) {
-      this.showNav = !["login", "register"].includes(to.name);
+      this.showNav = !['login', 'register'].includes(to.name);
     },
     onClick(e) {
-      if (this.$refs.nav) this.$refs.nav.onClick(e);
+      if (this.$refs.nav && !this.$refs.nav.$el.contains(e.target)) this.$refs.nav.closeMenu();
     },
   },
   created() {
     if (this.$route.name) this.checkNav(this.$route);
-    this.$store.commit("setToken", localStorage.getItem("token"));
+    this.$store.commit('setToken', localStorage.getItem('token'));
   },
   watch: {
     $route(to) {
@@ -40,8 +43,8 @@ export default {
 </script>
 
 <style lang="scss">
-@use "sass:math";
-@import "./src/assets/scss/_variables.scss";
+@use 'sass:math';
+@import './src/assets/scss/_variables.scss';
 
 body {
   font-family: Lato, sans-serif;
@@ -91,7 +94,7 @@ select {
   border: $border-size solid lighten($tertiary, 50%);
   padding: 0.7rem;
   border-radius: 0.5rem;
-  &[name="password"] {
+  &[name='password'] {
     position: relative;
   }
   &:focus {
@@ -147,6 +150,9 @@ select {
   margin-top: 54px;
   display: flex;
   flex-direction: column;
+  main {
+    padding-bottom: 1rem;
+  }
 }
 
 i {

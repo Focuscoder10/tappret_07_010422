@@ -8,8 +8,7 @@
 <style lang="scss" scoped>
 footer {
   background-color: white;
-  box-shadow: 0 -0.25rem 1rem rgb(black, 0.19),
-    0 -0.125rem 0.5rem rgb(black, 0.23);
+  box-shadow: 0 -0.25rem 1rem rgb(black, 0.19), 0 -0.125rem 0.5rem rgb(black, 0.23);
   position: sticky;
   bottom: 0;
   margin-top: auto;

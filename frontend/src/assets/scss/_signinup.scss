@@ -15,7 +15,7 @@ form {
   // input:focus {
   //   border-color: $primary;
   // }
-  button[type="submit"]:disabled {
+  button[type='submit']:disabled {
     opacity: 0.5;
   }
   .relative {
@@ -64,27 +64,27 @@ form {
           justify-content: center;
           align-items: center;
           width: 1rem;
-          font-family: "Font Awesome 6 Free";
+          font-family: 'Font Awesome 6 Free';
           font-weight: 900;
-          content: "\f111";
+          content: '\f111';
           margin-right: 0.5rem;
         }
         &.success {
           color: green;
           &::before {
-            content: "\f058";
+            content: '\f058';
           }
         }
         &.error {
           color: $primary;
           &::before {
-            content: "\f057";
+            content: '\f057';
           }
         }
       }
     }
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       top: 100%;
       left: 50%;
@@ -103,4 +103,15 @@ form {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.alert {
+  max-width: 450px !important;
+}
+
+@media screen and (min-width: 450px) {
+  .alert {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }

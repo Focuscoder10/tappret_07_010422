@@ -21,11 +21,11 @@ export default {
   },
   methods: {
     like(e) {
-      if ((e.type === "keydown" && e.key === "Enter") || e.type === "click")
+      if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click')
         this.fetch(`/posts/${this.post.id}/like`, {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify({ isLiked: !this.isLiked }),
-        }).then(res => {
+        }).then((res) => {
           if (res.status !== 200) return;
           this.isLiked = !this.isLiked;
           this.isLiked ? this.count++ : this.count--;
@@ -42,14 +42,14 @@ export default {
   },
   computed: {
     classLike() {
-      return this.isLiked ? "liked" : "";
+      return this.isLiked ? 'liked' : '';
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/_variables.scss";
+@import '@/assets/scss/_variables.scss';
 .container-like {
   i {
     font-size: 1.5rem;

@@ -1,13 +1,7 @@
 <template>
   <main role="main">
     <logo-login />
-    <form
-      role="form"
-      v-if="!isRegistered"
-      @submit.prevent="register"
-      @input="verify"
-      novalidate
-    >
+    <form role="form" v-if="!isRegistered" @submit.prevent="register" @input="verify" novalidate>
       <div class="relative">
         <input
           aria-label="entrer votre adresse email"
@@ -31,7 +25,7 @@
               <ul>
                 <li :class="classEmail">
                   L'adresse email est
-                  {{ verifyEmail ? "correcte" : "incorrecte" }}
+                  {{ verifyEmail ? 'correcte' : 'incorrecte' }}
                 </li>
               </ul>
             </div>
@@ -60,9 +54,7 @@
           <div v-if="isFirstNameTooltipVisible" class="tooltip">
             <div>
               <ul>
-                <li :class="classFirstName">
-                  Veuillez saisir un prénom correct
-                </li>
+                <li :class="classFirstName">Veuillez saisir un prénom correct</li>
               </ul>
             </div>
           </div>
@@ -125,15 +117,11 @@
             <div>
               <div>Le mot de passe doit contenir&nbsp;:</div>
               <ul>
-                <li :class="classMin">
-                  {{ constains.min }} caractères minimum
-                </li>
+                <li :class="classMin">{{ constains.min }} caractères minimum</li>
                 <li v-if="constains.bothcase" :class="classCase">
                   Lettres majuscules et minuscules
                 </li>
-                <li v-if="constains.digits" :class="classDigits">
-                  Au moins un chiffre
-                </li>
+                <li v-if="constains.digits" :class="classDigits">Au moins un chiffre</li>
                 <li v-if="constains.symbols" :class="classSymbols">
                   Au moins un caractère spécial
                 </li>
@@ -144,9 +132,7 @@
       </div>
 
       <div class="contain-button-register">
-        <button class="btn" type="submit" :disabled="!isValidRegister">
-          S'inscrire
-        </button>
+        <button class="btn" type="submit" :disabled="!isValidRegister">S'inscrire</button>
       </div>
       <div class="backup">
         Déjà un compte&nbsp;?
@@ -154,19 +140,15 @@
       </div>
     </form>
     <transition name="fade">
-      <alert-message
-        v-if="isRegistered || alert.type"
-        :message="alert.message"
-        :type="alert.type"
-      />
+      <alert-message ref="alert" />
     </transition>
   </main>
 </template>
 
 <script>
-import passwordValidator from "password-validator";
-import LogoLogin from "@/components/LogoLogin.vue";
-import AlertMessage from "@/components/AlertMessage.vue";
+import passwordValidator from 'password-validator';
+import LogoLogin from '@/components/LogoLogin.vue';
+import AlertMessage from '@/components/AlertMessage.vue';
 const constains = {
   min: 8,
   max: 64,
@@ -178,7 +160,7 @@ const constains = {
 const passValidator = new passwordValidator();
 
 function getStatus(bool) {
-  return bool ? "success" : "error";
+  return bool ? 'success' : 'error';
 }
 
 const emailRegex =
@@ -201,13 +183,16 @@ if (constains.symbols) {
 }
 
 export default {
+  metaInfo: {
+    title: 'Inscription',
+  },
   components: { LogoLogin, AlertMessage },
   data() {
     return {
-      email: "",
-      password: "",
-      firstname: "",
-      lastname: "",
+      email: '',
+      password: '',
+      firstname: '',
+      lastname: '',
       visible: false,
       isPasswordTooltipVisible: false,
       isEmailTooltipVisible: false,
@@ -220,10 +205,6 @@ export default {
       isRegistered: false,
       constains,
       details: [],
-      alert: {
-        message: "",
-        type: "",
-      },
     };
   },
   computed: {
@@ -249,28 +230,28 @@ export default {
     },
 
     verifyMin() {
-      return this.fieldCheck("min");
+      return this.fieldCheck('min');
     },
     classMin() {
       return getStatus(this.verifyMin);
     },
 
     verifyCase() {
-      return this.fieldCheck("lowercase") && this.fieldCheck("uppercase");
+      return this.fieldCheck('lowercase') && this.fieldCheck('uppercase');
     },
     classCase() {
       return getStatus(this.verifyCase);
     },
 
     verifyDigits() {
-      return this.fieldCheck("digits");
+      return this.fieldCheck('digits');
     },
     classDigits() {
       return getStatus(this.verifyDigits);
     },
 
     verifySymbols() {
-      return this.fieldCheck("symbols");
+      return this.fieldCheck('symbols');
     },
     classSymbols() {
       return getStatus(this.verifySymbols);
@@ -290,26 +271,18 @@ export default {
     },
 
     isValidRegister() {
-      return (
-        this.verifyEmail &&
-        this.verifyFirstName &&
-        this.verifyLastName &&
-        this.verifyPassword
-      );
+      return this.verifyEmail && this.verifyFirstName && this.verifyLastName && this.verifyPassword;
     },
   },
   methods: {
     fieldCheck(field) {
-      return !this.details.some(e => e.validation === field);
+      return !this.details.some((e) => e.validation === field);
     },
     verify() {
       this.isEmailTooltipVisible = this.email.length > 0 && this.isEmailFocused;
-      this.isFirstNameTooltipVisible =
-        this.firstname.length > 0 && this.isFirstNameFocused;
-      this.isLastNameTooltipVisible =
-        this.lastname.length > 0 && this.isLastNameFocused;
-      this.isPasswordTooltipVisible =
-        this.password.length > 0 && this.isPasswordFocused;
+      this.isFirstNameTooltipVisible = this.firstname.length > 0 && this.isFirstNameFocused;
+      this.isLastNameTooltipVisible = this.lastname.length > 0 && this.isLastNameFocused;
+      this.isPasswordTooltipVisible = this.password.length > 0 && this.isPasswordFocused;
       this.details = passValidator.validate(this.password, { details: true });
     },
     register() {
@@ -320,21 +293,24 @@ export default {
         firstname: this.firstname,
         lastname: this.lastname,
       };
-      this.fetch("/auth/signup", {
-        method: "POST",
+      this.fetch('/auth/signup', {
+        method: 'POST',
         body: JSON.stringify(data),
-      }).then(async res => {
+      }).then(async (res) => {
         const data = await res.json();
         if (res.status !== 201) {
-          this.alert.message = data.error;
-          this.alert.type = "error";
+          this.$refs.alert.show({
+            message: data.error,
+          });
           return;
         }
-        this.alert.message = "Votre compte a bien été crée";
-        this.alert.type = "success";
+        this.$refs.alert.show({
+          message: 'Votre compte a bien été crée',
+          status: 'success',
+        });
         this.isRegistered = true;
         setTimeout(() => {
-          this.$router.push({ path: "/login" });
+          this.$router.push({ path: '/login' });
         }, 3000);
       });
     },
@@ -343,8 +319,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/_variables.scss";
-@import "@/assets/scss/_signinup.scss";
+@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss/_signinup.scss';
 
 .alert {
   margin: auto;

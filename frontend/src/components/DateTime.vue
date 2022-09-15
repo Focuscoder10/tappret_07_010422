@@ -18,7 +18,7 @@ export default {
       return this.myMoment.fromNow();
     },
     absoluteTime() {
-      return this.myMoment.format("dddd d MMMM, à H:mm");
+      return this.myMoment.format('dddd d MMMM, à H:mm');
     },
   },
 };

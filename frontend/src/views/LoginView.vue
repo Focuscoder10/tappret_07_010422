@@ -25,7 +25,7 @@
               <ul>
                 <li :class="classEmail">
                   L'adresse email est
-                  {{ verifyEmail ? "correcte" : "incorrecte" }}
+                  {{ verifyEmail ? 'correcte' : 'incorrecte' }}
                 </li>
               </ul>
             </div>
@@ -59,39 +59,37 @@
       </div>
 
       <div class="contain-button-register">
-        <button class="btn" type="submit" :disabled="!isValidLogin">
-          Se connecter
-        </button>
+        <button class="btn" type="submit" :disabled="!isValidLogin">Se connecter</button>
       </div>
       <div class="backup">
         Créer un compte&nbsp;?
         <router-link to="/register">S'inscrire</router-link>
       </div>
     </form>
-    <transition name="fade">
-      <alert-message v-if="message" :message="message" type="error" />
-    </transition>
+    <alert-message ref="alert" />
   </main>
 </template>
 
 <script>
-import LogoLogin from "@/components/LogoLogin.vue";
-import AlertMessage from "@/components/AlertMessage.vue";
+import LogoLogin from '@/components/LogoLogin.vue';
+import AlertMessage from '@/components/AlertMessage.vue';
 
 function getStatus(bool) {
-  return bool ? "success" : "error";
+  return bool ? 'success' : 'error';
 }
 
 const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export default {
+  metaInfo: {
+    title: 'Connexion',
+  },
   components: { LogoLogin, AlertMessage },
   data() {
     return {
-      email: "",
-      password: "",
-      message: "",
+      email: '',
+      password: '',
       visible: false,
       isEmailTooltipVisible: false,
       isEmailFocused: false,
@@ -127,29 +125,33 @@ export default {
         email: this.email,
         password: this.password,
       };
-      this.fetch("/auth/login", {
-        method: "POST",
+      this.fetch('/auth/login', {
+        method: 'POST',
         body: JSON.stringify(data),
-      }).then(async res => {
+      }).then(async (res) => {
         const data = await res.json();
         if (res.status !== 200) {
-          this.message = data.error;
+          this.$refs.alert.show({
+            message: data.error,
+          });
           return;
         }
         try {
-          this.$store.commit("setToken", data.token);
+          this.$store.commit('setToken', data.token);
         } catch (e) {
-          this.message = e.message;
+          this.$refs.alert.show({
+            message: e.message,
+          });
           return;
         }
-        this.$router.push({ path: "/" });
+        this.$router.push({ path: '/' });
       });
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-@import "@/assets/scss/_variables.scss";
-@import "@/assets/scss/_signinup.scss";
+<style lang="scss">
+@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss/_signinup.scss';
 </style>

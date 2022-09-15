@@ -1,11 +1,6 @@
 <template>
   <header class="container">
-    <div
-      @click="historyBack"
-      @keydown="historyBack"
-      tabindex="1"
-      class="icon-arrow"
-    >
+    <div @click="historyBack" @keydown="historyBack" tabindex="1" class="icon-arrow">
       <i class="fa-solid fa-angle-left"></i>
     </div>
     <h1>{{ title }}</h1>
@@ -19,15 +14,14 @@ export default {
   },
   methods: {
     historyBack(e) {
-      if ((e.type === "keydown" && e.key === "Enter") || e.type === "click")
-        this.$router.back();
+      if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') this.$router.back();
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/_mixins.scss";
+@import '@/assets/scss/_mixins.scss';
 header {
   display: flex;
   padding: 1rem;
@@ -36,7 +30,7 @@ header {
   align-items: center;
   &::after {
     width: 2rem;
-    content: "";
+    content: '';
   }
   .icon-arrow {
     min-width: 2rem;

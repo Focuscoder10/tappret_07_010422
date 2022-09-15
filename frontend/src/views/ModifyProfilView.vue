@@ -34,7 +34,7 @@
                 <ul>
                   <li :class="classEmail">
                     L'adresse email est
-                    {{ verifyEmail ? "correcte" : "incorrecte" }}
+                    {{ verifyEmail ? 'correcte' : 'incorrecte' }}
                   </li>
                 </ul>
               </div>
@@ -63,9 +63,7 @@
             <div v-if="isFirstNameTooltipVisible" class="tooltip">
               <div>
                 <ul>
-                  <li :class="classFirstName">
-                    Veuillez saisir un prénom correct
-                  </li>
+                  <li :class="classFirstName">Veuillez saisir un prénom correct</li>
                 </ul>
               </div>
             </div>
@@ -131,15 +129,11 @@
               <div>
                 <div>Le mot de passe doit contenir&nbsp;:</div>
                 <ul>
-                  <li :class="classMin">
-                    {{ constains.min }} caractères minimum
-                  </li>
+                  <li :class="classMin">{{ constains.min }} caractères minimum</li>
                   <li v-if="constains.bothcase" :class="classCase">
                     Lettres majuscules et minuscules
                   </li>
-                  <li v-if="constains.digits" :class="classDigits">
-                    Au moins un chiffre
-                  </li>
+                  <li v-if="constains.digits" :class="classDigits">Au moins un chiffre</li>
                   <li v-if="constains.symbols" :class="classSymbols">
                     Au moins un caractère spécial
                   </li>
@@ -154,22 +148,16 @@
           </button>
         </div>
       </form>
-      <transition name="fade">
-        <alert-message
-          v-if="isModified || alert.type"
-          :message="alert.message"
-          :type="alert.type"
-        />
-      </transition>
+      <alert-message ref="alert" />
     </div>
   </main>
 </template>
 
 <script>
-import passwordValidator from "password-validator";
-import AlertMessage from "@/components/AlertMessage.vue";
-import AvatarProfile from "@/components/AvatarProfile.vue";
-import ReturnBlock from "@/components/ReturnBlock.vue";
+import passwordValidator from 'password-validator';
+import AlertMessage from '@/components/AlertMessage.vue';
+import AvatarProfile from '@/components/AvatarProfile.vue';
+import ReturnBlock from '@/components/ReturnBlock.vue';
 const constains = {
   min: 8,
   max: 64,
@@ -181,7 +169,7 @@ const constains = {
 const passValidator = new passwordValidator();
 
 function getStatus(bool) {
-  return bool ? "success" : "error";
+  return bool ? 'success' : 'error';
 }
 
 const emailRegex =
@@ -203,6 +191,12 @@ if (constains.symbols) {
   passValidator.has().symbols();
 }
 export default {
+  metaInfo() {
+    const user = this.$store.state.user;
+    return {
+      title: `Profil de ${user.firstname} ${user.lastname}`,
+    };
+  },
   components: { AlertMessage, AvatarProfile, ReturnBlock },
 
   data() {
@@ -210,10 +204,10 @@ export default {
       avatar: null,
       file: null,
       show: false,
-      email: "",
-      password: "",
-      firstname: "",
-      lastname: "",
+      email: '',
+      password: '',
+      firstname: '',
+      lastname: '',
       visible: false,
       isPasswordTooltipVisible: false,
       isEmailTooltipVisible: false,
@@ -226,10 +220,6 @@ export default {
       isModified: false,
       constains,
       details: [],
-      alert: {
-        message: "",
-        type: "",
-      },
     };
   },
   created() {
@@ -262,28 +252,28 @@ export default {
     },
 
     verifyMin() {
-      return this.fieldCheck("min");
+      return this.fieldCheck('min');
     },
     classMin() {
       return getStatus(this.verifyMin);
     },
 
     verifyCase() {
-      return this.fieldCheck("lowercase") && this.fieldCheck("uppercase");
+      return this.fieldCheck('lowercase') && this.fieldCheck('uppercase');
     },
     classCase() {
       return getStatus(this.verifyCase);
     },
 
     verifyDigits() {
-      return this.fieldCheck("digits");
+      return this.fieldCheck('digits');
     },
     classDigits() {
       return getStatus(this.verifyDigits);
     },
 
     verifySymbols() {
-      return this.fieldCheck("symbols");
+      return this.fieldCheck('symbols');
     },
     classSymbols() {
       return getStatus(this.verifySymbols);
@@ -292,10 +282,7 @@ export default {
     verifyPassword() {
       return (
         this.password.length === 0 ||
-        (this.verifyMin &&
-          this.verifyCase &&
-          this.verifyDigits &&
-          this.verifySymbols)
+        (this.verifyMin && this.verifyCase && this.verifyDigits && this.verifySymbols)
       );
     },
     classPassword() {
@@ -303,12 +290,7 @@ export default {
     },
 
     isValidRegister() {
-      return (
-        this.verifyEmail &&
-        this.verifyFirstName &&
-        this.verifyLastName &&
-        this.verifyPassword
-      );
+      return this.verifyEmail && this.verifyFirstName && this.verifyLastName && this.verifyPassword;
     },
   },
   methods: {
@@ -316,43 +298,43 @@ export default {
       this.file = file;
     },
     fieldCheck(field) {
-      return !this.details.some(e => e.validation === field);
+      return !this.details.some((e) => e.validation === field);
     },
     verify() {
       this.isEmailTooltipVisible = this.email.length > 0 && this.isEmailFocused;
-      this.isFirstNameTooltipVisible =
-        this.firstname.length > 0 && this.isFirstNameFocused;
-      this.isLastNameTooltipVisible =
-        this.lastname.length > 0 && this.isLastNameFocused;
-      this.isPasswordTooltipVisible =
-        this.password.length > 0 && this.isPasswordFocused;
+      this.isFirstNameTooltipVisible = this.firstname.length > 0 && this.isFirstNameFocused;
+      this.isLastNameTooltipVisible = this.lastname.length > 0 && this.isLastNameFocused;
+      this.isPasswordTooltipVisible = this.password.length > 0 && this.isPasswordFocused;
       this.details = passValidator.validate(this.password, { details: true });
     },
     modifyProfile() {
       if (!this.isValidRegister) return;
       const fd = new FormData();
-      fd.set("firstname", this.firstname);
-      fd.set("lastname", this.lastname);
-      fd.set("email", this.email);
-      if (this.password.length > 0) fd.set("password", this.password);
-      if (this.file) fd.set("file", this.file);
-      this.fetch("/users/me", {
-        method: "PUT",
+      fd.set('firstname', this.firstname);
+      fd.set('lastname', this.lastname);
+      fd.set('email', this.email);
+      if (this.password.length > 0) fd.set('password', this.password);
+      if (this.file) fd.set('file', this.file);
+      this.fetch('/users/me', {
+        method: 'PUT',
         headers: {},
         body: fd,
-      }).then(async res => {
+      }).then(async (res) => {
         const data = await res.json();
         if (res.status !== 200) {
-          this.alert.message = data.error;
-          this.alert.type = "error";
+          this.$refs.alert.show({
+            message: data.error,
+          });
           return;
         }
-        this.$store.commit("setToken", data.token);
-        this.alert.message = "Votre compte a bien été mise à jour";
-        this.alert.type = "success";
+        this.$store.commit('setToken', data.token);
+        this.$refs.alert.show({
+          message: 'Votre compte a bien été mise à jour',
+          status: 'success',
+        });
         this.isModified = true;
         setTimeout(() => {
-          this.$router.push({ path: "/" });
+          this.$router.push({ path: '/' });
         }, 3000);
       });
     },
@@ -361,10 +343,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "sass:math";
-@import "@/assets/scss/_variables.scss";
-@import "@/assets/scss/_signinup.scss";
-@import "@/assets/scss/_mixins.scss";
+@use 'sass:math';
+@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss/_signinup.scss';
+@import '@/assets/scss/_mixins.scss';
 
 .container {
   max-width: 450px;

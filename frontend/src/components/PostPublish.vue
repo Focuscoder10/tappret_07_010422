@@ -23,10 +23,7 @@
       <div class="footer-group-icon">
         <div class="footer-left-icon">
           <div>
-            <router-link
-              :to="{ path: `/posts/${post.id}/comments` }"
-              tabindex="2"
-            >
+            <router-link :to="{ path: `/posts/${post.id}/comments` }" tabindex="2">
               <i class="fa-solid fa-comment-dots"></i>
               {{ post.commentsCount }}
             </router-link>
@@ -35,11 +32,7 @@
         </div>
         <div v-if="isEditable" class="footer-right-icon">
           <router-link :to="{ name: 'posts-modify', params: { id: post.id } }">
-            <i
-              class="fa-solid fa-pen"
-              tabindex="2"
-              aria-label="icone d'édition du poste"
-            ></i>
+            <i class="fa-solid fa-pen" tabindex="2" aria-label="icone d'édition du poste"></i>
           </router-link>
           <i
             @click="deletePost"
@@ -54,9 +47,9 @@
 </template>
 
 <script>
-import LikeAddToPost from "@/components/LikeAddToPost.vue";
-import DateTime from "@/components/DateTime.vue";
-import AvatarUser from "./AvatarUser.vue";
+import LikeAddToPost from '@/components/LikeAddToPost.vue';
+import DateTime from '@/components/DateTime.vue';
+import AvatarUser from './AvatarUser.vue';
 const scheme = /^https?:\/\//;
 export default {
   components: { LikeAddToPost, DateTime, AvatarUser },
@@ -65,10 +58,15 @@ export default {
   },
   methods: {
     deletePost() {
-      this.fetch("/posts/" + this.post.id, {
-        method: "DELETE",
-      }).then(res => {
-        if (res.status === 200) this.$emit("delete-post", this.post);
+      this.$emit('show-modal', {
+        post: this.post,
+        callback: () => {
+          this.fetch('/posts/' + this.post.id, {
+            method: 'DELETE',
+          }).then((res) => {
+            if (res.status === 200) this.$emit('delete-post', this.post);
+          });
+        },
       });
     },
   },
@@ -79,24 +77,20 @@ export default {
         : `${this.$store.getters.apiUrl}/upload/${this.post.media}`;
     },
     isEditable() {
-      return (
-        this.post.userId === this.$store.state.user.id ||
-        this.$store.state.user.isModerator
-      );
+      return this.post.userId === this.$store.state.user.id || this.$store.state.user.isModerator;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/_variables.scss";
-@import "@/assets/scss/_mixins.scss";
+@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss/_mixins.scss';
 
 .post-card {
   overflow: hidden;
   transition: border-radius 0.3s;
-  box-shadow: 0.25rem 0.75rem 1.25rem rgb(black, 0.19),
-    0 0.25rem 0.5rem rgb(black, 0.23);
+  box-shadow: 0.25rem 0.75rem 1.25rem rgb(black, 0.19), 0 0.25rem 0.5rem rgb(black, 0.23);
   .hearder-post-card {
     display: flex;
     align-items: center;

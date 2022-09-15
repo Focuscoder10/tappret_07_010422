@@ -1,41 +1,31 @@
 <template>
   <div class="middle-img">
     <label tabindex="1" @keydown="onKeydown">
-      <input
-        @change="changeFile"
-        type="file"
-        ref="file"
-        :accept="types.join(',')"
-      />
+      <input @change="changeFile" type="file" ref="file" :accept="types.join(',')" />
       <div class="img-profil size">
-        <img
-          :src="newImg || avatar || defaultImg"
-          alt="Avatar de l'utilisateur"
-        />
+        <img :src="newImg || avatar || defaultImg" alt="Avatar de l'utilisateur" />
       </div>
-      <div class="change" aria-label="éditer votre avatar">
-        Changer de photo
-      </div>
+      <div class="change" aria-label="éditer votre avatar">Changer de photo</div>
     </label>
   </div>
 </template>
 
 <script>
-import defaultImg from "@/assets/images/avatar.png";
+import defaultImg from '@/assets/images/avatar.png';
 const scheme = /^https?:\/\//;
 export default {
   data() {
     return {
       file: null,
       newImg: null,
-      types: ["image/jpeg", "image/png", "image/gif"],
+      types: ['image/jpeg', 'image/png', 'image/gif'],
       defaultImg,
     };
   },
 
   methods: {
     onKeydown(e) {
-      if (e.key === "Enter") this.$refs.file.click();
+      if (e.key === 'Enter') this.$refs.file.click();
     },
     changeFile() {
       if (this.$refs.file.files.length > 0) {
@@ -43,7 +33,7 @@ export default {
         if (this.types.includes(file.type)) {
           this.file = file;
           this.newImg = URL.createObjectURL(file);
-          this.$emit("avatar-change", file);
+          this.$emit('avatar-change', file);
           return;
         }
       }
@@ -66,10 +56,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "sass:math";
-@import "@/assets/scss/_variables.scss";
-@import "@/assets/scss/_signinup.scss";
-@import "@/assets/scss/_mixins.scss";
+@use 'sass:math';
+@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss/_signinup.scss';
+@import '@/assets/scss/_mixins.scss';
 .middle-img {
   label {
     @include flex-justi-align;

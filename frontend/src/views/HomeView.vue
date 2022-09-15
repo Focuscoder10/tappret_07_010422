@@ -6,19 +6,25 @@
         :post="post"
         :key="post.id"
         @delete-post="deletePost"
+        @show-modal="onModalShow"
       />
       <div ref="target"></div>
     </div>
     <new-post-button />
+    <alert-message :full="true" ref="alert" />
   </main>
 </template>
 
 <script>
-import NewPostButton from "@/components/NewPostButton.vue";
-import PostPublish from "@/components/PostPublish.vue";
+import NewPostButton from '@/components/NewPostButton.vue';
+import PostPublish from '@/components/PostPublish.vue';
+import AlertMessage from '@/components/AlertMessage.vue';
 
 export default {
-  components: { NewPostButton, PostPublish },
+  metaInfo: {
+    title: 'Accueil',
+  },
+  components: { NewPostButton, PostPublish, AlertMessage },
   data() {
     return {
       posts: [],
@@ -30,12 +36,13 @@ export default {
   methods: {
     deletePost(post) {
       this.posts.splice(this.posts.indexOf(post), 1);
+      this.$refs.alert.hide();
     },
     async getNextPage() {
       const search = new URLSearchParams({ page: this.page });
-      const posts = await this.fetch("/posts?" + search);
+      const posts = await this.fetch('/posts?' + search);
       if (posts.status !== 200) {
-        this.$router.push({ path: "/login" });
+        this.$router.push({ path: '/login' });
         return;
       }
       this.posts.push(...(await posts.json()));
@@ -47,6 +54,15 @@ export default {
     },
     async intersect(e) {
       if (e[0].isIntersecting) await this.getNextPage();
+    },
+    onModalShow({ post, callback }) {
+      this.$refs.alert.show({
+        status: 'warning',
+        title: 'Confirmation',
+        type: 'dialog',
+        callback,
+        message: `Voulez-vous supprimer '${post.title}' ?`,
+      });
     },
   },
   async created() {

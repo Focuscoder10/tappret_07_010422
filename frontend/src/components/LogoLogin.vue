@@ -111,8 +111,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/_mixins.scss";
-@import "@/assets/scss/_variables.scss";
+@import '@/assets/scss/_mixins.scss';
+@import '@/assets/scss/_variables.scss';
 .logo {
   @include flex-justi-align;
   flex-direction: column;

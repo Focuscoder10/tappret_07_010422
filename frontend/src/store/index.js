@@ -1,9 +1,9 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import moment from "moment";
-import jwtd from "jwt-decode";
+import Vue from 'vue';
+import Vuex from 'vuex';
+import moment from 'moment';
+import jwtd from 'jwt-decode';
 
-moment.locale("fr");
+moment.locale('fr');
 
 Vue.use(Vuex);
 
@@ -12,13 +12,13 @@ Vue.mixin({
     fetch(resource, options = {}) {
       const obj = {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
       };
       Object.assign(obj, options);
       if (this.$store.state.token) {
-        obj.headers.Authorization = "Bearer " + this.$store.state.token;
+        obj.headers.Authorization = 'Bearer ' + this.$store.state.token;
       }
       return fetch(`${this.$store.getters.apiUrl}/api${resource}`, obj);
     },
@@ -40,13 +40,13 @@ export default new Vuex.Store({
   mutations: {
     setToken(state, token) {
       try {
-        localStorage.setItem("token", token);
+        localStorage.setItem('token', token);
         state.user = jwtd(token);
         state.token = token;
       } catch (e) {
         state.user = null;
         state.token = null;
-        localStorage.removeItem("token");
+        localStorage.removeItem('token');
       }
     },
   },

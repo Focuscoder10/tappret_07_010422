@@ -5,8 +5,8 @@
 </template>
 
 <style lang="scss" scoped>
-@import "@/assets/scss/_variables.scss";
-@import "@/assets/scss/_mixins.scss";
+@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss/_mixins.scss';
 .button-create {
   border-radius: 2rem;
   background-color: $primary;
