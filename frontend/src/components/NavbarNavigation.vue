@@ -8,13 +8,13 @@
       <transition name="height">
         <ul v-show="show" class="menu">
           <li v-if="$route.name !== 'profile'">
-            <router-link tabindex="1" to="/profile">
+            <router-link tabindex="1" :to="{ name: 'profile' }">
               <i class="fa-solid fa-user"></i>
               Voir votre profil
             </router-link>
           </li>
           <li>
-            <router-link tabindex="1" to="/logout">
+            <router-link tabindex="1" :to="{ name: 'logout' }">
               <i class="fa-solid fa-right-from-bracket"></i>
               Déconnexion
             </router-link>
@@ -27,6 +27,7 @@
 
 <script>
 import LogoLogin from '@/components/LogoLogin.vue';
+
 export default {
   components: { LogoLogin },
   data() {
@@ -51,7 +52,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss';
 
 :focus-visible {
   outline-color: white;
@@ -71,9 +72,9 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .fa-solid {
-      font-size: 1.2rem;
-    }
+  }
+  .fa-solid {
+    font-size: 1.2rem;
   }
   .menu {
     margin: 0;
@@ -83,15 +84,18 @@ nav {
     flex-direction: column;
     padding-top: $usePadding;
     gap: $useGap;
-    li > i {
-      font-size: 2rem;
-      width: 2rem;
-      margin-right: 0.3rem;
-    }
     a {
-      text-decoration: none;
+      display: block;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background-color: rgb(white, 0.2);
+      transition: background-color 0.2s;
+      color: white;
       &:hover {
-        color: lighten($primary, 40%);
+        background-color: rgb(white, 0.4);
+      }
+      i {
+        margin-right: 0.3rem;
       }
     }
   }

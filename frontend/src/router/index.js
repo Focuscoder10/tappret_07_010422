@@ -5,6 +5,7 @@ import HomeView from '@/views/HomeView.vue';
 Vue.use(VueRouter);
 
 const routes = [
+  // TODO
   {
     path: '/',
     name: 'home',
@@ -22,17 +23,17 @@ const routes = [
   },
   {
     path: '/posts/create',
-    name: 'posts-create',
+    name: 'post-create',
     component: () => import('@/views/CreatePostView.vue'),
   },
   {
     path: '/posts/:id/modify',
-    name: 'posts-modify',
+    name: 'post-modify',
     component: () => import('@/views/CreatePostView.vue'),
   },
   {
-    path: '/posts/:id/comments',
-    name: 'comments',
+    path: '/posts/:id',
+    name: 'post-view',
     component: () => import('@/views/CommentView.vue'),
   },
   {
@@ -47,6 +48,7 @@ const routes = [
   },
 ];
 
+// Gestion système d'historique
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -55,11 +57,11 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   window.scrollTo(0, 0);
-  const publicPages = ['/login', '/register'];
-  const authRequired = !publicPages.includes(to.path);
+  const publicPages = ['login', 'register'];
+  const authRequired = !publicPages.includes(to.name);
   const loggedIn = localStorage.getItem('token');
   if (authRequired && !loggedIn) {
-    next('/login');
+    next({ name: 'login' });
   } else {
     next();
   }

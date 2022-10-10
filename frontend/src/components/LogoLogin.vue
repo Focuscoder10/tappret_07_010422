@@ -1,7 +1,7 @@
 <template>
-  <router-link to="/" :class="type === 'navbar' ? 'logo navbar' : 'logo'">
+  <router-link :to="{ name: 'home' }" :class="type === 'navbar' ? 'logo navbar' : 'logo'">
     <svg
-      aria-label="logo de l'entreprise groupomania"
+      aria-label="Logo de l'entreprise groupomania"
       version="1.2"
       baseProfile="tiny"
       xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +30,7 @@
       </g>
     </svg>
     <svg
-      aria-label="logo de l'entreprise groupomania"
+      aria-label="Logo de l'entreprise groupomania"
       version="1.2"
       baseProfile="tiny"
       xmlns="http://www.w3.org/2000/svg"
@@ -111,10 +111,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/_mixins.scss';
-@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss';
 .logo {
-  @include flex-justi-align;
+  @include flex-center-center;
   flex-direction: column;
   text-align: center;
 

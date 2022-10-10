@@ -1,149 +1,123 @@
 <template>
   <main role="main">
-    <div class="container">
+    <div class="container small">
       <return-block title="Modifier votre profil" />
-      <form
-        role="form"
-        v-if="!isModified"
-        @submit.prevent="modifyProfile"
-        @input="verify"
-        novalidate
-      >
+      <form role="form" v-if="!isModified" @submit.prevent="onSubmit" @input="onInput" novalidate>
         <avatar-profile @avatar-change="avatarChange" />
-        <div class="relative">
+        <div>
           <label for="email">Adresse email</label>
-          <input
-            aria-label="éditer votre adresse email"
-            type="email"
-            id="email"
-            name="email"
-            v-model="email"
-            @focus="
-              isEmailFocused = true;
-              verify();
-            "
-            @blur="
-              isEmailFocused = false;
-              verify();
-            "
-            :class="classEmail"
-          />
-          <transition name="fade">
-            <div v-if="isEmailTooltipVisible" class="tooltip">
-              <div>
-                <ul>
-                  <li :class="classEmail">
-                    L'adresse email est
-                    {{ verifyEmail ? 'correcte' : 'incorrecte' }}
-                  </li>
-                </ul>
+          <div class="relative">
+            <input
+              aria-label="Modifiez votre adresse email"
+              type="email"
+              id="email"
+              name="email"
+              v-model="email"
+              v-focus:email
+              :class="_email.status"
+            />
+            <transition name="fade">
+              <div v-if="isTooltipVisible.email" class="tooltip">
+                <div>
+                  <ul>
+                    <li :class="_email.status">
+                      L'adresse email est
+                      {{ _email.isValid ? 'correcte' : 'incorrecte' }}
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </transition>
+            </transition>
+          </div>
         </div>
-        <div class="relative">
+        <div>
           <label for="firstname">Prénom</label>
-          <input
-            aria-label="éditer votre prénom"
-            type="text"
-            id="firstname"
-            name="firstname"
-            v-model="firstname"
-            @focus="
-              isFirstNameFocused = true;
-              verify();
-            "
-            @blur="
-              isFirstNameFocused = false;
-              verify();
-            "
-            :class="classFirstName"
-          />
-          <transition name="fade">
-            <div v-if="isFirstNameTooltipVisible" class="tooltip">
-              <div>
-                <ul>
-                  <li :class="classFirstName">Veuillez saisir un prénom correct</li>
-                </ul>
+          <div class="relative">
+            <input
+              aria-label="Modifiez votre prénom"
+              type="text"
+              id="firstname"
+              name="firstname"
+              v-model="firstname"
+              v-focus:firstname
+              :class="_firstname.status"
+            />
+            <transition name="fade">
+              <div v-if="isTooltipVisible.firstname" class="tooltip">
+                <div>
+                  <ul>
+                    <li :class="_firstname.status">
+                      Le prénom est {{ _firstname.isValid ? 'correct' : 'incorrect' }}
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </transition>
+            </transition>
+          </div>
         </div>
-        <div class="relative">
+        <div>
           <label for="lastname">Nom</label>
-          <input
-            aria-label="éditer votre nom"
-            type="text"
-            id="lastname"
-            name="lastname"
-            v-model="lastname"
-            @focus="
-              isLastNameFocused = true;
-              verify();
-            "
-            @blur="
-              isLastNameFocused = false;
-              verify();
-            "
-            :class="classLastName"
-          />
-          <transition name="fade">
-            <div v-if="isLastNameTooltipVisible" class="tooltip">
-              <div>
-                <ul>
-                  <li :class="classLastName">Veuillez saisir un nom correct</li>
-                </ul>
+          <div class="relative">
+            <input
+              aria-label="Modifiez votre nom"
+              type="text"
+              id="lastname"
+              name="lastname"
+              v-model="lastname"
+              v-focus:lastname
+              :class="_lastname.status"
+            />
+            <transition name="fade">
+              <div v-if="isTooltipVisible.lastname" class="tooltip">
+                <div>
+                  <ul>
+                    <li :class="_lastname.status">
+                      Le nom est {{ _firstname.isValid ? 'correct' : 'incorrect' }}
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </transition>
+            </transition>
+          </div>
         </div>
-        <div class="relative">
-          <button @click="show = !show" class="btn toggle-pass" type="button">
+        <div>
+          <button @click="editPassword = !editPassword" class="btn small tertiary" type="button">
             Changer votre mot de passe
           </button>
-          <label v-if="show" for="password">Mot de passe</label>
-          <div v-if="show" class="eyed">
-            <input
-              aria-label="éditer votre mot de passe"
-              :type="visible ? 'text' : 'password'"
-              id="password"
-              name="password"
-              v-model="password"
-              @focus="
-                isPasswordFocused = true;
-                verify();
-              "
-              @blur="
-                isPasswordFocused = false;
-                verify();
-              "
-              :class="classPassword"
-            />
-            <button type="button" @click="visible = !visible">
-              <i v-if="visible" class="fas fa-eye-slash"></i>
-              <i v-else class="fas fa-eye"></i>
-            </button>
-          </div>
-          <transition name="fade">
-            <div v-if="isPasswordTooltipVisible" class="tooltip">
-              <div>
-                <div>Le mot de passe doit contenir&nbsp;:</div>
-                <ul>
-                  <li :class="classMin">{{ constains.min }} caractères minimum</li>
-                  <li v-if="constains.bothcase" :class="classCase">
-                    Lettres majuscules et minuscules
-                  </li>
-                  <li v-if="constains.digits" :class="classDigits">Au moins un chiffre</li>
-                  <li v-if="constains.symbols" :class="classSymbols">
-                    Au moins un caractère spécial
-                  </li>
-                </ul>
-              </div>
+          <label v-if="editPassword" for="password">Mot de passe</label>
+          <div class="relative">
+            <div v-if="editPassword" class="eyed">
+              <input
+                aria-label="Modifiez votre mot de passe"
+                :type="isPasswordVisible ? 'text' : 'password'"
+                id="password"
+                name="password"
+                v-model="password"
+                v-focus:password
+                :class="_password.status"
+              />
+              <button type="button" @click="isPasswordVisible = !isPasswordVisible">
+                <i v-if="isPasswordVisible" class="fas fa-eye-slash"></i>
+                <i v-else class="fas fa-eye"></i>
+              </button>
             </div>
-          </transition>
+            <transition name="fade">
+              <div v-if="isTooltipVisible.password" class="tooltip">
+                <div>
+                  <div>Le mot de passe doit contenir&nbsp;:</div>
+                  <ul>
+                    <li :class="_min.status">8 caractères minimum</li>
+                    <li :class="_case.status">Lettres majuscules et minuscules</li>
+                    <li :class="_digits.status">Au moins un chiffre</li>
+                    <li :class="_symbols.status">Au moins un caractère spécial</li>
+                  </ul>
+                </div>
+              </div>
+            </transition>
+          </div>
         </div>
         <div class="contain-button-register">
-          <button class="btn" type="submit" :disabled="!isValidRegister">
+          <button class="btn" type="submit" :disabled="!isValidForm">
             Enregistrer vos modifications
           </button>
         </div>
@@ -154,207 +128,162 @@
 </template>
 
 <script>
-import passwordValidator from 'password-validator';
 import AlertMessage from '@/components/AlertMessage.vue';
 import AvatarProfile from '@/components/AvatarProfile.vue';
 import ReturnBlock from '@/components/ReturnBlock.vue';
-const constains = {
-  min: 8,
-  max: 64,
-  bothcase: true,
-  digits: true,
-  symbols: true,
-};
+import { regex, getStatus, genPasswordValidator } from '@/assets/js';
+import { mapActions, mapState } from 'vuex';
 
-const passValidator = new passwordValidator();
+const passwordValidator = genPasswordValidator();
 
-function getStatus(bool) {
-  return bool ? 'success' : 'error';
-}
-
-const emailRegex =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-const nameRegex = /^[\p{L} ,.'-]+$/u;
-
-passValidator.is().min(constains.min).is().max(constains.max);
-
-if (constains.bothcase) {
-  passValidator.has().uppercase().has().lowercase();
-}
-
-if (constains.digits) {
-  passValidator.has().digits();
-}
-
-if (constains.symbols) {
-  passValidator.has().symbols();
-}
 export default {
   metaInfo() {
-    const user = this.$store.state.user;
     return {
-      title: `Profil de ${user.firstname} ${user.lastname}`,
+      title: `Profil de ${this.user.firstname} ${this.user.lastname}`,
     };
   },
   components: { AlertMessage, AvatarProfile, ReturnBlock },
-
   data() {
     return {
-      avatar: null,
-      file: null,
-      show: false,
       email: '',
       password: '',
       firstname: '',
       lastname: '',
-      visible: false,
-      isPasswordTooltipVisible: false,
-      isEmailTooltipVisible: false,
-      isFirstNameTooltipVisible: false,
-      isLastNameTooltipVisible: false,
-      isEmailFocused: false,
-      isFirstNameFocused: false,
-      isLastNameFocused: false,
-      isPasswordFocused: false,
+      avatar: null,
+      file: null,
+      editPassword: false,
+      isPasswordVisible: false,
+      isTooltipVisible: {
+        email: false,
+        password: false,
+        firstname: false,
+        lastname: false,
+      },
+      isFocused: {
+        email: false,
+        password: false,
+        firstname: false,
+        lastname: false,
+      },
       isModified: false,
-      constains,
       details: [],
     };
   },
   created() {
-    const user = this.$store.state.user;
-    this.firstname = user.firstname;
-    this.lastname = user.lastname;
-    this.email = user.email;
-    this.avatar = user.avatar;
+    this.firstname = this.user.firstname;
+    this.lastname = this.user.lastname;
+    this.email = this.user.email;
+    this.avatar = this.user.avatar;
   },
   computed: {
-    verifyEmail() {
-      return emailRegex.test(this.email);
+    ...mapState(['user']),
+    _email() {
+      return getStatus(regex.email.test(this.email));
     },
-    classEmail() {
-      return getStatus(this.verifyEmail);
+    _firstname() {
+      return getStatus(regex.name.test(this.firstname));
     },
-
-    verifyFirstName() {
-      return nameRegex.test(this.firstname);
+    _lastname() {
+      return getStatus(regex.name.test(this.lastname));
     },
-    classFirstName() {
-      return getStatus(this.verifyFirstName);
-    },
-
-    verifyLastName() {
-      return nameRegex.test(this.lastname);
-    },
-    classLastName() {
-      return getStatus(this.verifyLastName);
-    },
-
-    verifyMin() {
-      return this.fieldCheck('min');
-    },
-    classMin() {
-      return getStatus(this.verifyMin);
-    },
-
-    verifyCase() {
-      return this.fieldCheck('lowercase') && this.fieldCheck('uppercase');
-    },
-    classCase() {
-      return getStatus(this.verifyCase);
-    },
-
-    verifyDigits() {
-      return this.fieldCheck('digits');
-    },
-    classDigits() {
-      return getStatus(this.verifyDigits);
-    },
-
-    verifySymbols() {
-      return this.fieldCheck('symbols');
-    },
-    classSymbols() {
-      return getStatus(this.verifySymbols);
-    },
-
-    verifyPassword() {
-      return (
+    _password() {
+      return getStatus(
         this.password.length === 0 ||
-        (this.verifyMin && this.verifyCase && this.verifyDigits && this.verifySymbols)
+          (this._min.isValid && this._case.isValid && this._digits.isValid && this._symbols.isValid)
       );
     },
-    classPassword() {
-      return getStatus(this.verifyPassword);
+    _min() {
+      return getStatus(this.fieldCheck('min'));
     },
-
-    isValidRegister() {
-      return this.verifyEmail && this.verifyFirstName && this.verifyLastName && this.verifyPassword;
+    _case() {
+      return getStatus(this.fieldCheck('lowercase') && this.fieldCheck('uppercase'));
+    },
+    _digits() {
+      return getStatus(this.fieldCheck('digits'));
+    },
+    _symbols() {
+      return getStatus(this.fieldCheck('symbols'));
+    },
+    isValidForm() {
+      return (
+        this._email.isValid &&
+        this._firstname.isValid &&
+        this._lastname.isValid &&
+        this._password.isValid
+      );
     },
   },
   methods: {
+    ...mapActions(['setToken']),
     avatarChange(file) {
       this.file = file;
     },
+
+    // vérifie la présence d'un type d'erreur
     fieldCheck(field) {
       return !this.details.some((e) => e.validation === field);
     },
-    verify() {
-      this.isEmailTooltipVisible = this.email.length > 0 && this.isEmailFocused;
-      this.isFirstNameTooltipVisible = this.firstname.length > 0 && this.isFirstNameFocused;
-      this.isLastNameTooltipVisible = this.lastname.length > 0 && this.isLastNameFocused;
-      this.isPasswordTooltipVisible = this.password.length > 0 && this.isPasswordFocused;
-      this.details = passValidator.validate(this.password, { details: true });
+    onInput() {
+      for (const field of ['email', 'password', 'firstname', 'lastname']) {
+        this.isTooltipVisible[field] = this[field].length > 0 && this.isFocused[field];
+      }
+      this.details = passwordValidator.validate(this.password, { details: true });
     },
-    modifyProfile() {
-      if (!this.isValidRegister) return;
-      const fd = new FormData();
-      fd.set('firstname', this.firstname);
-      fd.set('lastname', this.lastname);
-      fd.set('email', this.email);
-      if (this.password.length > 0) fd.set('password', this.password);
-      if (this.file) fd.set('file', this.file);
-      this.fetch('/users/me', {
-        method: 'PUT',
-        headers: {},
-        body: fd,
-      }).then(async (res) => {
+    async onSubmit() {
+      try {
+        if (!this.isValidForm) return;
+        const body = new FormData();
+        const user = {
+          firstname: this.firstname,
+          lastname: this.lastname,
+          email: this.email,
+        };
+        if (this.password.length > 0) user.password = this.password;
+        body.set('user', JSON.stringify(user));
+        if (this.file) body.set('file', this.file);
+        const res = await this.fetch('/users/me', {
+          method: 'PUT',
+          headers: {},
+          body,
+        });
         const data = await res.json();
         if (res.status !== 200) {
-          this.$refs.alert.show({
-            message: data.error,
-          });
+          this.$refs.alert.show(data);
           return;
         }
-        this.$store.commit('setToken', data.token);
+        this.setToken(data.token);
         this.$refs.alert.show({
           message: 'Votre compte a bien été mise à jour',
-          status: 'success',
+          mode: 'success',
         });
         this.isModified = true;
         setTimeout(() => {
-          this.$router.push({ path: '/' });
+          this.$router.push({ name: 'home' });
         }, 3000);
-      });
+      } catch (e) {
+        this.$refs.alert.show(e);
+      }
+    },
+    onFocusChange(arg, evt) {
+      this.isFocused[arg] = evt.type === 'focus';
+      this.onInput();
+    },
+  },
+  directives: {
+    focus: {
+      bind(el, { arg }, { context }) {
+        el.addEventListener('focus', context.onFocusChange.bind(this, arg));
+        el.addEventListener('blur', context.onFocusChange.bind(this, arg));
+      },
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@use 'sass:math';
-@import '@/assets/scss/_variables.scss';
-@import '@/assets/scss/_signinup.scss';
-@import '@/assets/scss/_mixins.scss';
-
-.container {
-  max-width: 450px;
-}
-.fa-arrow-left {
-  font-size: 2rem;
-}
-label {
-  padding: $usePadding 0;
+@import '@/assets/scss';
+@import '@/assets/scss/signinup';
+.relative > input {
+  width: 100%;
 }
 </style>

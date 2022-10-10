@@ -1,15 +1,15 @@
-const multer = require("multer");
-const crypto = require("crypto");
+const multer = require('multer');
+const crypto = require('crypto');
 
 const MIMETYPES = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/gif": "gif",
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/gif': 'gif',
 };
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, "upload");
+    cb(null, 'upload');
   },
   filename(req, file, cb) {
     const filename = `${crypto.randomUUID()}.${MIMETYPES[file.mimetype]}`;
@@ -23,9 +23,9 @@ module.exports = multer({
     fileSize: 512 * 1024,
   },
   fileFilter(req, file, cb) {
-    if (!MIMETYPES.hasOwnProperty(file.mimetype)) {
-      return cb(new Error("Wrong File Type"));
+    if (!Object.hasOwn(MIMETYPES, file.mimetype)) {
+      return cb(new Error('Wrong File Type'));
     }
-    cb(null, true);
+    return cb(null, true);
   },
-}).single("file");
+}).single('file');

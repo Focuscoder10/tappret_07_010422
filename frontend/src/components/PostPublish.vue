@@ -22,24 +22,29 @@
       <date-time :time="post.createdAt" />
       <div class="footer-group-icon">
         <div class="footer-left-icon">
-          <div>
-            <router-link :to="{ path: `/posts/${post.id}/comments` }" tabindex="2">
+          <div class="comments">
+            <router-link
+              :to="{ name: 'post-view', params: { id: post.id } }"
+              tabindex="2"
+              aria-label="Voir les commentaires"
+            >
               <i class="fa-solid fa-comment-dots"></i>
               {{ post.commentsCount }}
             </router-link>
           </div>
-          <like-add-to-post tabindex="2" :post="post" />
+          <like-add-to-post :post="post" />
         </div>
         <div v-if="isEditable" class="footer-right-icon">
-          <router-link :to="{ name: 'posts-modify', params: { id: post.id } }">
-            <i class="fa-solid fa-pen" tabindex="2" aria-label="icone d'édition du poste"></i>
-          </router-link>
-          <i
-            @click="deletePost"
-            class="fa-solid fa-trash-can"
+          <router-link
+            :to="{ name: 'post-modify', params: { id: post.id } }"
             tabindex="2"
-            aria-label="icone de suppréssion du poste"
-          ></i>
+            aria-label="Modifier le post"
+          >
+            <i class="fa-solid fa-pen"></i>
+          </router-link>
+          <a role="button" @click="deletePost" tabindex="2" aria-label="Supprimer le post">
+            <i class="fa-solid fa-trash-can"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -49,8 +54,9 @@
 <script>
 import LikeAddToPost from '@/components/LikeAddToPost.vue';
 import DateTime from '@/components/DateTime.vue';
-import AvatarUser from './AvatarUser.vue';
-const scheme = /^https?:\/\//;
+import AvatarUser from '@/components/AvatarUser.vue';
+import { mapGetters, mapState } from 'vuex';
+
 export default {
   components: { LikeAddToPost, DateTime, AvatarUser },
   props: {
@@ -59,38 +65,36 @@ export default {
   methods: {
     deletePost() {
       this.$emit('show-modal', {
-        post: this.post,
-        callback: () => {
-          this.fetch('/posts/' + this.post.id, {
+        model: this.post,
+        callback: async () => {
+          const res = await this.fetch(`/posts/${this.post.id}`, {
             method: 'DELETE',
-          }).then((res) => {
-            if (res.status === 200) this.$emit('delete-post', this.post);
           });
+          if (res.status === 200) this.$emit('delete-post', this.post);
         },
       });
     },
   },
   computed: {
+    ...mapState(['user']),
+    ...mapGetters(['uploadUrl']),
     mediaSrc() {
-      return scheme.test(this.post.media)
-        ? this.post.media
-        : `${this.$store.getters.apiUrl}/upload/${this.post.media}`;
+      return this.uploadUrl(this.post.media);
     },
     isEditable() {
-      return this.post.userId === this.$store.state.user.id || this.$store.state.user.isModerator;
+      return this.post.userId === this.user.id || this.user.isModerator;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/_variables.scss';
-@import '@/assets/scss/_mixins.scss';
+@import '@/assets/scss';
 
 .post-card {
   overflow: hidden;
   transition: border-radius 0.3s;
-  box-shadow: 0.25rem 0.75rem 1.25rem rgb(black, 0.19), 0 0.25rem 0.5rem rgb(black, 0.23);
+  box-shadow: $shadow;
   .hearder-post-card {
     display: flex;
     align-items: center;
@@ -102,14 +106,7 @@ export default {
         margin-bottom: 0.3rem;
         font-weight: bold;
         font-size: 1.1em;
-        // gap: $useGap;
-        // padding: $usePadding;
       }
-      // .post-name {
-      //   display: flex;
-      //   gap: $useGap;
-      //   padding: $usePadding;
-      // }
     }
   }
   .post-card-picture {
@@ -129,17 +126,27 @@ export default {
     padding: $usePadding;
     background-color: lighten($tertiary, 60%);
 
-    .footer-group-icon {
+    .footer-group-icon:deep {
+      margin-top: 0.5rem;
       display: flex;
       justify-content: space-between;
       .footer-left-icon,
       .footer-right-icon {
-        padding: $usePadding;
         display: flex;
-        gap: 1rem;
+        gap: 0.5rem;
         a {
-          text-decoration: none;
           display: block;
+          background-color: lighten($tertiary, 50%);
+          padding: 0.5rem;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          transition: background-color 0.2s;
+          &:hover {
+            background-color: lighten($primary, 50%);
+          }
         }
         i {
           font-size: 1.5rem;

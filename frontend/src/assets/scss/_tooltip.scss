@@ -1,0 +1,60 @@
+.tooltip {
+  pointer-events: none;
+  position: absolute;
+  bottom: 125%;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  > div {
+    box-shadow: $shadow;
+    padding: 0.5rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    > div {
+      font-weight: bold;
+    }
+    > ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      > li {
+        display: flex;
+        align-items: center;
+        &::before {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          width: 1rem;
+          font-family: 'Font Awesome 6 Free';
+          font-weight: 900;
+          content: '\f111';
+          margin-right: 0.5rem;
+        }
+        &.success {
+          color: green;
+          &::before {
+            content: '\f058';
+          }
+        }
+        &.error {
+          color: $primary;
+          &::before {
+            content: '\f057';
+          }
+        }
+      }
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: white transparent transparent transparent;
+    }
+  }
+}

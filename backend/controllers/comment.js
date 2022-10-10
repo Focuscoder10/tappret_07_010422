@@ -1,27 +1,23 @@
-const { Comment } = require("../models");
-exports.create = async (req, res) => {
-  if (!req.body.content) return res.status(400).json({ error: "Bad Request" });
-  try {
-    await Comment.create({
-      content: req.body.content,
-      userId: req.auth.user.id,
-      postId: req.params.id,
-    });
-    res.status(201).json({ message: "Comment Created" });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+const { Comment } = require('../models');
+const { asyncWrapper, HttpError } = require('../common');
 
-exports.list = async (req, res) => {
-  try {
-    const comments = await Post.scope("comment").findAll({
-      where: { postId: req.params.id },
-    });
-    res.status(200).json(comments);
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Internal Server Error" });
+exports.create = asyncWrapper(async (req, res) => {
+  const { content } = req.body;
+  if (!content) throw new HttpError(400);
+  await Comment.create({
+    content,
+    userId: req.auth.user.id,
+    postId: req.params.id,
+  });
+  return res.status(201).json({ message: 'Comment Created' });
+});
+
+exports.delete = asyncWrapper(async (req, res) => {
+  const comment = await Comment.findByPk(req.params.commentId);
+  if (!comment) throw new HttpError(404);
+  if (!req.auth.user.isModerator && req.auth.user.id !== comment.userId) {
+    throw new HttpError(401);
   }
-};
+  await comment.destroy();
+  return res.status(200).json({ message: 'Comment Deleted' });
+});

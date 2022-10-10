@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
-    <div :class="full ? 'backdrop' : ''" v-show="visible">
-      <div class="alert" :class="status">
+    <div :class="{ backdrop: full }" v-show="visible" @click.self="hide">
+      <div class="alert" :class="mode">
         <div class="header">
           <i :class="icon"></i>
           <div class="title">{{ title }}</div>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { capitalize } from '@/assets/js';
+
 export default {
   props: {
     full: { type: Boolean, default: false },
@@ -29,7 +31,7 @@ export default {
       title: 'Erreur',
       message: '',
       type: 'alert',
-      status: 'error',
+      mode: 'error',
       callback: () => {},
       visible: false,
     };
@@ -37,7 +39,7 @@ export default {
   computed: {
     icon() {
       let classList;
-      switch (this.status) {
+      switch (this.mode) {
         case 'success':
           classList = 'fa-regular fa-circle-check';
           break;
@@ -51,13 +53,14 @@ export default {
     },
   },
   methods: {
-    show({ title, message, status, type, callback }) {
-      console.log(message, status);
-      this.title = title || 'Erreur';
+
+    // définit le contenue du modal
+    show({ title, type, callback, message, mode, status }) {
       this.type = type || 'alert';
       this.callback = callback || (() => {});
       this.message = message;
-      this.status = status || 'error';
+      this.mode = mode || 'error';
+      this.title = title || `${capitalize(this.mode)} ${status || ''}`;
       this.visible = true;
     },
     hide() {
@@ -68,42 +71,59 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss';
+$width: 28rem;
+$gap: 0.5rem;
+$icon: 2rem;
 .alert {
-  max-width: 700px;
+  $modes: (
+    'success': green,
+    'error': red,
+    'warning': orange,
+  );
+  max-width: $width;
   background-color: white;
   border-radius: 0.5rem;
   box-shadow: $shadow;
   margin: 1rem;
   overflow: hidden;
-  &.success i {
-    color: green;
-  }
-  &.error i {
-    color: red;
-  }
-  &.warning i {
-    color: orange;
-  }
   > * {
-    padding: 0.5rem;
+    padding: $gap;
+  }
+  @each $name, $color in $modes {
+    &.#{$name} {
+      .header {
+        background-color: lighten($color, 45%);
+      }
+      i {
+        color: $color;
+      }
+    }
   }
   .header {
     display: flex;
-    gap: 1rem;
+    gap: $gap;
     .title {
       flex: 1;
       align-self: center;
     }
     i {
-      font-size: 2rem;
+      font-size: $icon;
+      max-width: $icon;
+      max-height: $icon;
     }
+  }
+  .main {
+    margin-left: $icon + $gap;
+    min-height: $icon + $gap * 2;
+    display: flex;
+    align-items: center;
   }
   .footer {
     background: lighten($tertiary, 60%);
     display: flex;
     justify-content: flex-end;
-    gap: 0.5rem;
+    gap: $gap;
   }
   .hide {
     i {
@@ -113,24 +133,23 @@ export default {
   }
 }
 
+@media screen and (min-width: $width) {
+  .alert {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 .backdrop {
+  z-index: 1;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgb($tertiary, 0.5);
+  background-color: rgb(black, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

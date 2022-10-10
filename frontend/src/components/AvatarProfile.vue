@@ -1,18 +1,19 @@
 <template>
   <div class="middle-img">
     <label tabindex="1" @keydown="onKeydown">
-      <input @change="changeFile" type="file" ref="file" :accept="types.join(',')" />
-      <div class="img-profil size">
+      <input @change="onChange" type="file" ref="file" :accept="types.join(',')" />
+      <div class="avatar large">
         <img :src="newImg || avatar || defaultImg" alt="Avatar de l'utilisateur" />
       </div>
-      <div class="change" aria-label="éditer votre avatar">Changer de photo</div>
+      <div class="btn small" aria-label="Modifier votre avatar">Changer de photo</div>
     </label>
   </div>
 </template>
 
 <script>
 import defaultImg from '@/assets/images/avatar.png';
-const scheme = /^https?:\/\//;
+import { mapGetters, mapState } from 'vuex';
+
 export default {
   data() {
     return {
@@ -22,12 +23,13 @@ export default {
       defaultImg,
     };
   },
-
   methods: {
+
+    // ouvre la sélection du fichier
     onKeydown(e) {
       if (e.key === 'Enter') this.$refs.file.click();
     },
-    changeFile() {
+    onChange() {
       if (this.$refs.file.files.length > 0) {
         const file = this.$refs.file.files[0];
         if (this.types.includes(file.type)) {
@@ -42,41 +44,25 @@ export default {
     },
   },
   computed: {
+    ...mapState(['user']),
+    ...mapGetters(['uploadUrl']),
     avatar() {
-      const state = this.$store.state;
-      if (state.user.avatar) {
-        return scheme.test(state.user.avatar)
-          ? state.user.avatar
-          : `${this.$store.getters.apiUrl}/upload/${state.user.avatar}`;
-      }
-      return null;
+      return this.uploadUrl(this.user.avatar);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@use 'sass:math';
-@import '@/assets/scss/_variables.scss';
-@import '@/assets/scss/_signinup.scss';
-@import '@/assets/scss/_mixins.scss';
+@import '@/assets/scss';
 .middle-img {
   label {
-    @include flex-justi-align;
+    @include flex-center-center;
     flex-direction: column;
     cursor: pointer;
   }
-  .change {
-    padding: $usePadding;
-  }
-  .size {
-    $size: 80px;
-    height: $size;
-    width: $size;
-    min-width: $size;
-    min-height: $size;
-    border-radius: math.div($size, 2);
-    overflow: hidden;
+  .btn {
+    margin-top: 0.5rem;
   }
   img {
     width: 100%;

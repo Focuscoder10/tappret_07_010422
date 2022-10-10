@@ -1,6 +1,6 @@
 <template>
-  <div class="container-like" :class="classLike" @click="like" @keydown="like">
-    <a role="button">
+  <div class="like" :class="{ liked: isLiked }">
+    <a role="button" tabindex="2" aria-label="Liker le post" @click="like" @keydown="like">
       <i class="fa-solid fa-thumbs-up"></i>
       {{ count }}
     </a>
@@ -20,42 +20,32 @@ export default {
     this.count = this.post.likes;
   },
   methods: {
-    like(e) {
-      if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click')
-        this.fetch(`/posts/${this.post.id}/like`, {
+    async like(e) {
+      if ((e.type === 'keydown' && e.key === 'Enter') || e.type === 'click') {
+        const isLiked = !this.isLiked;
+        const res = await this.fetch(`/posts/${this.post.id}/like`, {
           method: 'POST',
-          body: JSON.stringify({ isLiked: !this.isLiked }),
-        }).then((res) => {
-          if (res.status !== 200) return;
-          this.isLiked = !this.isLiked;
-          this.isLiked ? this.count++ : this.count--;
-          // if(this.isLiked){
-          //   this.count++
-          // }else {
-          //   this.count--
-          // }
+          body: { isLiked },
         });
+        if (res.status !== 200) return;
+        this.isLiked = isLiked;
+        this.count += this.isLiked ? 1 : -1;
+      }
     },
   },
   props: {
     post: Object,
   },
-  computed: {
-    classLike() {
-      return this.isLiked ? 'liked' : '';
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/_variables.scss';
-.container-like {
+@import '@/assets/scss';
+.like {
   i {
     font-size: 1.5rem;
   }
   a {
-    text-decoration: none;
     display: block;
   }
   &.liked {

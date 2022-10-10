@@ -1,11 +1,19 @@
-const rateLimit = require("express-rate-limit");
+const rateLimit = require('express-rate-limit');
+const { STATUS_CODES } = require('node:http');
 
+const status = 429;
+const message = STATUS_CODES[status];
+
+/**
+ * Limite l'enregistrement et la connexion d'un compte
+ * 5 tentatives sur une fenêtre de 15 minutes
+ */
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minute
-  max: 5, // Limit each IP to 5 requests per `window`
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  message: { error: "Too Many Requests" },
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { status, message },
 });
 
 module.exports = limiter;

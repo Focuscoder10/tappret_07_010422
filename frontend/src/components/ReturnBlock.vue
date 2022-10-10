@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/_mixins.scss';
+@import '@/assets/scss';
 header {
   display: flex;
   padding: 1rem;
@@ -36,7 +36,7 @@ header {
     min-width: 2rem;
     width: 2rem;
     aspect-ratio: 1/1;
-    @include flex-justi-align;
+    @include flex-center-center;
     .fa-solid {
       font-size: 1.5rem;
     }

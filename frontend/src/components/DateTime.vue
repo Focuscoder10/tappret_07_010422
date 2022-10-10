@@ -9,7 +9,6 @@ export default {
   props: {
     time: String,
   },
-
   computed: {
     myMoment() {
       return this.moment(this.time);

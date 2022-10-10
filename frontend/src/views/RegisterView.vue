@@ -1,142 +1,117 @@
 <template>
   <main role="main">
     <logo-login />
-    <form role="form" v-if="!isRegistered" @submit.prevent="register" @input="verify" novalidate>
+    <form
+      role="form"
+      class="container small"
+      v-if="!isRegistered"
+      @submit.prevent="onSubmit"
+      @input="onInput"
+      novalidate
+    >
       <div class="relative">
         <input
-          aria-label="entrer votre adresse email"
+          aria-label="Saisissez votre adresse email"
           type="email"
           name="email"
           placeholder="Adresse email"
           v-model="email"
-          @focus="
-            isEmailFocused = true;
-            verify();
-          "
-          @blur="
-            isEmailFocused = false;
-            verify();
-          "
-          :class="classEmail"
+          v-focus:email
+          :class="_email.status"
         />
         <transition name="fade">
-          <div v-if="isEmailTooltipVisible" class="tooltip">
+          <div v-if="isTooltipVisible.email" class="tooltip">
             <div>
               <ul>
-                <li :class="classEmail">
+                <li :class="_email.status">
                   L'adresse email est
-                  {{ verifyEmail ? 'correcte' : 'incorrecte' }}
+                  {{ _email.isValid ? 'correcte' : 'incorrecte' }}
                 </li>
               </ul>
             </div>
           </div>
         </transition>
       </div>
-
       <div class="relative">
         <input
-          aria-label="entrer votre prénom"
+          aria-label="Saisissez votre prénom"
           type="text"
           name="firstname"
           placeholder="Prénom"
           v-model="firstname"
-          @focus="
-            isFirstNameFocused = true;
-            verify();
-          "
-          @blur="
-            isFirstNameFocused = false;
-            verify();
-          "
-          :class="classFirstName"
+          v-focus:firstname
+          :class="_firstname.status"
         />
         <transition name="fade">
-          <div v-if="isFirstNameTooltipVisible" class="tooltip">
+          <div v-if="isTooltipVisible.firstname" class="tooltip">
             <div>
               <ul>
-                <li :class="classFirstName">Veuillez saisir un prénom correct</li>
+                <li :class="_firstname.status">
+                  Le prénom est {{ _firstname.isValid ? 'correct' : 'incorrect' }}
+                </li>
               </ul>
             </div>
           </div>
         </transition>
       </div>
-
       <div class="relative">
         <input
-          aria-label="entrer votre nom"
+          aria-label="Saisissez votre nom"
           type="text"
           name="lastname"
           placeholder="Nom"
           v-model="lastname"
-          @focus="
-            isLastNameFocused = true;
-            verify();
-          "
-          @blur="
-            isLastNameFocused = false;
-            verify();
-          "
-          :class="classLastName"
+          v-focus:lastname
+          :class="_lastname.status"
         />
         <transition name="fade">
-          <div v-if="isLastNameTooltipVisible" class="tooltip">
+          <div v-if="isTooltipVisible.lastname" class="tooltip">
             <div>
               <ul>
-                <li :class="classLastName">Veuillez saisir un nom correct</li>
+                <li :class="_lastname.status">
+                  Le nom est {{ _firstname.isValid ? 'correct' : 'incorrect' }}
+                </li>
               </ul>
             </div>
           </div>
         </transition>
       </div>
-
       <div class="relative">
         <div class="eyed">
           <input
-            aria-label="entrer votre mot de passe"
-            :type="visible ? 'text' : 'password'"
+            aria-label="Saisissez votre mot de passe"
+            :type="isPasswordVisible ? 'text' : 'password'"
             name="password"
             placeholder="Mot de passe"
             v-model="password"
-            @focus="
-              isPasswordFocused = true;
-              verify();
-            "
-            @blur="
-              isPasswordFocused = false;
-              verify();
-            "
-            :class="classPassword"
+            v-focus:password
+            :class="_password.status"
           />
-          <button type="button" @click="visible = !visible">
-            <i v-if="visible" class="fas fa-eye-slash"></i>
+          <button type="button" @click="isPasswordVisible = !isPasswordVisible">
+            <i v-if="isPasswordVisible" class="fas fa-eye-slash"></i>
             <i v-else class="fas fa-eye"></i>
           </button>
         </div>
         <transition name="fade">
-          <div v-if="isPasswordTooltipVisible" class="tooltip">
+          <div v-if="isTooltipVisible.password" class="tooltip">
             <div>
               <div>Le mot de passe doit contenir&nbsp;:</div>
               <ul>
-                <li :class="classMin">{{ constains.min }} caractères minimum</li>
-                <li v-if="constains.bothcase" :class="classCase">
-                  Lettres majuscules et minuscules
-                </li>
-                <li v-if="constains.digits" :class="classDigits">Au moins un chiffre</li>
-                <li v-if="constains.symbols" :class="classSymbols">
-                  Au moins un caractère spécial
-                </li>
+                <li :class="_min.status">8 caractères minimum</li>
+                <li :class="_case.status">Lettres majuscules et minuscules</li>
+                <li :class="_digits.status">Au moins un chiffre</li>
+                <li :class="_symbols.status">Au moins un caractère spécial</li>
               </ul>
             </div>
           </div>
         </transition>
       </div>
-
       <div class="contain-button-register">
-        <button class="btn" type="submit" :disabled="!isValidRegister">S'inscrire</button>
+        <button class="btn" type="submit" :disabled="!isValidForm">S'inscrire</button>
       </div>
       <div class="backup">
         Déjà un compte&nbsp;?
-        <router-link to="/login">Se connecter</router-link>
+        <router-link :to="{ name: 'login' }">Se connecter</router-link>
       </div>
     </form>
     <transition name="fade">
@@ -146,41 +121,12 @@
 </template>
 
 <script>
-import passwordValidator from 'password-validator';
 import LogoLogin from '@/components/LogoLogin.vue';
 import AlertMessage from '@/components/AlertMessage.vue';
-const constains = {
-  min: 8,
-  max: 64,
-  bothcase: true,
-  digits: true,
-  symbols: true,
-};
+import { regex, getStatus, genPasswordValidator } from '@/assets/js';
+import { mapState } from 'vuex';
 
-const passValidator = new passwordValidator();
-
-function getStatus(bool) {
-  return bool ? 'success' : 'error';
-}
-
-const emailRegex =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-const nameRegex = /^[\p{L} ,.'-]+$/u;
-
-passValidator.is().min(constains.min).is().max(constains.max);
-
-if (constains.bothcase) {
-  passValidator.has().uppercase().has().lowercase();
-}
-
-if (constains.digits) {
-  passValidator.has().digits();
-}
-
-if (constains.symbols) {
-  passValidator.has().symbols();
-}
+const passwordValidator = genPasswordValidator();
 
 export default {
   metaInfo: {
@@ -193,136 +139,127 @@ export default {
       password: '',
       firstname: '',
       lastname: '',
-      visible: false,
-      isPasswordTooltipVisible: false,
-      isEmailTooltipVisible: false,
-      isFirstNameTooltipVisible: false,
-      isLastNameTooltipVisible: false,
-      isEmailFocused: false,
-      isFirstNameFocused: false,
-      isLastNameFocused: false,
-      isPasswordFocused: false,
+      isPasswordVisible: false,
+      isTooltipVisible: {
+        email: false,
+        password: false,
+        firstname: false,
+        lastname: false,
+      },
+      isFocused: {
+        email: false,
+        password: false,
+        firstname: false,
+        lastname: false,
+      },
       isRegistered: false,
-      constains,
       details: [],
     };
   },
+  created() {
+    if (this.user) this.$router.push({ name: 'home' });
+  },
   computed: {
-    verifyEmail() {
-      return emailRegex.test(this.email);
+    ...mapState(['user']),
+    _email() {
+      return getStatus(regex.email.test(this.email));
     },
-    classEmail() {
-      return getStatus(this.verifyEmail);
+    _firstname() {
+      return getStatus(regex.name.test(this.firstname));
     },
-
-    verifyFirstName() {
-      return nameRegex.test(this.firstname);
+    _lastname() {
+      return getStatus(regex.name.test(this.lastname));
     },
-    classFirstName() {
-      return getStatus(this.verifyFirstName);
-    },
-
-    verifyLastName() {
-      return nameRegex.test(this.lastname);
-    },
-    classLastName() {
-      return getStatus(this.verifyLastName);
-    },
-
-    verifyMin() {
-      return this.fieldCheck('min');
-    },
-    classMin() {
-      return getStatus(this.verifyMin);
-    },
-
-    verifyCase() {
-      return this.fieldCheck('lowercase') && this.fieldCheck('uppercase');
-    },
-    classCase() {
-      return getStatus(this.verifyCase);
-    },
-
-    verifyDigits() {
-      return this.fieldCheck('digits');
-    },
-    classDigits() {
-      return getStatus(this.verifyDigits);
-    },
-
-    verifySymbols() {
-      return this.fieldCheck('symbols');
-    },
-    classSymbols() {
-      return getStatus(this.verifySymbols);
-    },
-
-    verifyPassword() {
-      return (
+    _password() {
+      return getStatus(
         this.password.length > 0 &&
-        this.verifyMin &&
-        this.verifyCase &&
-        this.verifyDigits &&
-        this.verifySymbols
+          this._min.isValid &&
+          this._case.isValid &&
+          this._digits.isValid &&
+          this._symbols.isValid
       );
     },
-    classPassword() {
-      return getStatus(this.verifyPassword);
+    _min() {
+      return getStatus(this.fieldCheck('min'));
     },
-
-    isValidRegister() {
-      return this.verifyEmail && this.verifyFirstName && this.verifyLastName && this.verifyPassword;
+    _case() {
+      return getStatus(this.fieldCheck('lowercase') && this.fieldCheck('uppercase'));
+    },
+    _digits() {
+      return getStatus(this.fieldCheck('digits'));
+    },
+    _symbols() {
+      return getStatus(this.fieldCheck('symbols'));
+    },
+    isValidForm() {
+      return (
+        this._email.isValid &&
+        this._firstname.isValid &&
+        this._lastname.isValid &&
+        this._password.isValid
+      );
     },
   },
   methods: {
     fieldCheck(field) {
       return !this.details.some((e) => e.validation === field);
     },
-    verify() {
-      this.isEmailTooltipVisible = this.email.length > 0 && this.isEmailFocused;
-      this.isFirstNameTooltipVisible = this.firstname.length > 0 && this.isFirstNameFocused;
-      this.isLastNameTooltipVisible = this.lastname.length > 0 && this.isLastNameFocused;
-      this.isPasswordTooltipVisible = this.password.length > 0 && this.isPasswordFocused;
-      this.details = passValidator.validate(this.password, { details: true });
+    onInput() {
+      for (const field of ['email', 'password', 'firstname', 'lastname']) {
+        this.isTooltipVisible[field] = this[field].length > 0 && this.isFocused[field];
+      }
+      this.details = passwordValidator.validate(this.password, { details: true });
     },
-    register() {
-      if (!this.isValidRegister) return;
-      const data = {
-        email: this.email,
-        password: this.password,
-        firstname: this.firstname,
-        lastname: this.lastname,
-      };
-      this.fetch('/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      }).then(async (res) => {
+    async onSubmit() {
+      try {
+        if (!this.isValidForm) return;
+        const body = {
+          email: this.email,
+          password: this.password,
+          firstname: this.firstname,
+          lastname: this.lastname,
+        };
+        const res = await this.fetch('/auth/signup', {
+          method: 'POST',
+          body,
+        });
         const data = await res.json();
         if (res.status !== 201) {
-          this.$refs.alert.show({
-            message: data.error,
-          });
+          this.$refs.alert.show(data);
           return;
         }
         this.$refs.alert.show({
           message: 'Votre compte a bien été crée',
-          status: 'success',
+          mode: 'success',
         });
         this.isRegistered = true;
         setTimeout(() => {
-          this.$router.push({ path: '/login' });
+          this.$router.push({ name: 'login' });
         }, 3000);
-      });
+      } catch (e) {
+        this.$refs.alert.show(e);
+      }
+    },
+    onFocusChange(arg, evt) {
+      this.isFocused[arg] = evt.type === 'focus';
+      this.onInput();
+    },
+  },
+  directives: {
+    focus: {
+      bind(el, { arg }, { context }) {
+        el.addEventListener('focus', context.onFocusChange.bind(this, arg));
+        el.addEventListener('blur', context.onFocusChange.bind(this, arg));
+      },
+      inserted(el, { arg }) {
+        if (arg === 'email') el.focus();
+      },
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/_variables.scss';
-@import '@/assets/scss/_signinup.scss';
-
-.alert {
-  margin: auto;
-}
+@import '@/assets/scss';
+@import '@/assets/scss/signinup';
 </style>

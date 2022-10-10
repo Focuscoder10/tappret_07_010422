@@ -2,16 +2,15 @@
   <main role="main">
     <div class="container">
       <return-block title="Commentaires" />
-      <post-publish v-if="post" :post="post" />
+      <post-publish v-if="post" :post="post" @delete-post="deletePost" @show-modal="onShowModal" />
       <div class="add-comment">
-        <avatar-user :avatar="$store.state.user.avatar" />
-
-        <form role="form" @submit.prevent="verifyMsg">
+        <avatar-user :avatar="user.avatar" />
+        <form role="form" @submit.prevent="onSubmit">
           <textarea
-            v-model="msg"
-            @input="changeHeight"
+            v-model="content"
+            @input="onInput"
             name="write-comment"
-            aria-label="ajouter un commentaire"
+            aria-label="Ajouter un commentaire"
             placeholder="Ajouter un commentaire"
             autocomplete="off"
             rows="1"
@@ -20,9 +19,17 @@
         </form>
       </div>
       <div v-if="post" class="comments">
-        <comment-publish v-for="comment of comments" :key="comment.id" :comment="comment" />
+        <comment-publish
+          v-for="comment of post.comments"
+          :key="comment.id"
+          :comment="comment"
+          @delete-comment="deleteComment"
+          @show-modal="onShowModal"
+        />
       </div>
     </div>
+    <alert-message :full="true" ref="alert" />
+    <alert-message ref="error" />
   </main>
 </template>
 
@@ -31,6 +38,9 @@ import CommentPublish from '@/components/CommentPublish.vue';
 import ReturnBlock from '@/components/ReturnBlock.vue';
 import PostPublish from '@/components/PostPublish.vue';
 import AvatarUser from '@/components/AvatarUser.vue';
+import AlertMessage from '@/components/AlertMessage.vue';
+import { mapState } from 'vuex';
+
 export default {
   metaInfo() {
     const title = this.post ? this.post.title : 'Commentaires';
@@ -43,76 +53,93 @@ export default {
     ReturnBlock,
     PostPublish,
     AvatarUser,
+    AlertMessage,
   },
   data() {
     return {
       post: null,
-      comments: [],
-      msg: '',
+      content: '',
     };
   },
   methods: {
-    changeHeight(e) {
+    onInput(e) {
       e.target.style.height = 'auto';
-      e.target.style.height = e.target.scrollHeight + 'px';
+      e.target.style.height = `${e.target.scrollHeight}px`;
     },
-    verifyMsg() {
-      if (this.isNotValid) {
-        return;
-      }
-      this.fetch('/posts/' + this.$route.params.id + '/comments', {
-        method: 'POST',
-        body: JSON.stringify({ content: this.msg }),
-      }).then((res) => {
+    async onSubmit() {
+      try {
+        if (this.isNotValid) return;
+        const res = await this.fetch(`/posts/${this.$route.params.id}/comments`, {
+          method: 'POST',
+          body: { content: this.content },
+        });
+        const data = await res.json();
         if (res.status !== 201) {
+          this.$refs.error.show(data);
           return;
         }
         const comment = {
-          created_at: new Date().toJSON(),
-          content: this.msg,
+          createdAt: new Date().toJSON(),
+          content: this.content,
           user: {
-            firstname: this.$store.state.user.firstname,
-            lastname: this.$store.state.user.lastname,
-            avatar: this.$store.state.user.avatar,
+            firstname: this.user.firstname,
+            lastname: this.user.lastname,
+            avatar: this.user.avatar,
           },
         };
-        this.comments.unshift(comment);
-        this.msg = null;
+        this.post.comments.unshift(comment);
+        this.content = '';
+      } catch (e) {
+        this.$refs.error.show(e);
+      }
+    },
+    deletePost() {
+      this.$refs.alert.hide();
+      this.$router.push({ name: 'home' });
+    },
+    deleteComment(comment) {
+      this.post.comments.splice(this.post.comments.indexOf(comment), 1);
+      this.$refs.alert.hide();
+    },
+    onShowModal({ model, callback }) {
+      const modelName = Object.hasOwn(model, 'comments') ? 'post' : 'commentaire';
+      this.$refs.alert.show({
+        mode: 'warning',
+        title: 'Confirmation',
+        type: 'dialog',
+        callback,
+        message: `Voulez-vous supprimer le ${modelName} de '${model.user.firstname} ${model.user.lastname}' ?`,
       });
     },
   },
   computed: {
+    ...mapState(['user']),
     isNotValid() {
-      return !this.msg;
+      return !this.content;
     },
   },
-  created() {
-    this.fetch('/posts/' + this.$route.params.id).then(async (post) => {
-      if (post.status !== 200) {
-        this.$router.push({ path: '/login' });
-        return;
-      }
-      const data = await post.json();
-      this.comments = data.comments;
-      delete data.comments;
-      this.post = data;
-    });
+  async created() {
+    const res = await this.fetch(`/posts/${this.$route.params.id}`);
+    const data = await res.json();
+    if (res.status !== 200) {
+      this.$refs.error.show(data);
+      return;
+    }
+    this.post = data;
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/_mixins.scss';
-@import '@/assets/scss/_variables.scss';
+@import '@/assets/scss';
 .add-comment {
   transition: border-radius 0.3s, margin 0.3s;
-  @include flex-justi-align;
+  @include flex-center-center;
   padding: 0.7rem;
   background-color: $tertiary;
   gap: 1rem;
   form {
     width: 100%;
-    // padding: 12px 0px;
     display: flex;
     background-color: white;
     border-radius: 1.2rem;
@@ -131,6 +158,10 @@ export default {
       align-self: center;
     }
   }
+}
+
+.post-card:deep .comments {
+  display: none;
 }
 
 @media screen and (min-width: 700px) {

@@ -6,17 +6,16 @@
         :post="post"
         :key="post.id"
         @delete-post="deletePost"
-        @show-modal="onModalShow"
+        @show-modal="onShowModal"
       />
       <div ref="target"></div>
     </div>
-    <new-post-button />
     <alert-message :full="true" ref="alert" />
+    <alert-message ref="error" />
   </main>
 </template>
 
 <script>
-import NewPostButton from '@/components/NewPostButton.vue';
 import PostPublish from '@/components/PostPublish.vue';
 import AlertMessage from '@/components/AlertMessage.vue';
 
@@ -24,7 +23,7 @@ export default {
   metaInfo: {
     title: 'Accueil',
   },
-  components: { NewPostButton, PostPublish, AlertMessage },
+  components: { PostPublish, AlertMessage },
   data() {
     return {
       posts: [],
@@ -34,37 +33,56 @@ export default {
     };
   },
   methods: {
+
+    /**
+     * fonction de chargement et d'affichage de posts
+     * initialisation de l'observer
+     */
+    async getNextPage() {
+      try {
+        const search = new URLSearchParams({ page: this.page });
+        const res = await this.fetch(`/posts?${search}`);
+        const data = await res.json();
+        if (res.status !== 200) {
+          this.$refs.error.show(data);
+          return;
+        }
+        this.posts.push(...data);
+        if (!this.observe) {
+          this.observer.observe(this.$refs.target); 
+          this.observe = true;
+        }
+        this.page++;
+      } catch (e) {
+        this.$refs.error.show(e);
+      }
+    },
+
+    /**
+     * intersection du viewport et de la target
+     * et chargement des posts suivants
+     */
+    async intersect(e) {
+      if (e[0].isIntersecting) await this.getNextPage();
+    },
     deletePost(post) {
       this.posts.splice(this.posts.indexOf(post), 1);
       this.$refs.alert.hide();
     },
-    async getNextPage() {
-      const search = new URLSearchParams({ page: this.page });
-      const posts = await this.fetch('/posts?' + search);
-      if (posts.status !== 200) {
-        this.$router.push({ path: '/login' });
-        return;
-      }
-      this.posts.push(...(await posts.json()));
-      if (!this.observe) {
-        this.observer.observe(this.$refs.target);
-        this.observe = true;
-      }
-      this.page++;
-    },
-    async intersect(e) {
-      if (e[0].isIntersecting) await this.getNextPage();
-    },
-    onModalShow({ post, callback }) {
+
+    // fonction déclanchée lors de l'intéraction avec la corbeil
+    onShowModal({ model, callback }) {
       this.$refs.alert.show({
-        status: 'warning',
+        mode: 'warning',
         title: 'Confirmation',
         type: 'dialog',
         callback,
-        message: `Voulez-vous supprimer '${post.title}' ?`,
+        message: `Voulez-vous supprimer le post de '${model.user.firstname} ${model.user.lastname}' ?`,
       });
     },
   },
+
+  // method éxcécutée lors de la création du composant
   async created() {
     this.observer = new IntersectionObserver(this.intersect, {
       root: null,

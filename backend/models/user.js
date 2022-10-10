@@ -1,9 +1,10 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { DataTypes } = require("sequelize");
-module.exports = sequelize => {
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
   const User = sequelize.define(
-    "user",
+    'user',
     {
       firstname: {
         type: DataTypes.STRING,
@@ -23,7 +24,7 @@ module.exports = sequelize => {
         allowNull: false,
         set(password) {
           const hash = bcrypt.hashSync(password, 10);
-          this.setDataValue("password", hash);
+          this.setDataValue('password', hash);
         },
       },
       avatar: DataTypes.STRING,
@@ -35,7 +36,7 @@ module.exports = sequelize => {
     {
       defaultScope: {
         attributes: {
-          exclude: ["password", "createdAt", "updatedAt", "isModerator"],
+          exclude: ['password', 'createdAt', 'updatedAt', 'isModerator'],
         },
       },
       scopes: {
@@ -67,7 +68,7 @@ module.exports = sequelize => {
       isModerator: this.isModerator,
     };
     return jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "24h",
+      expiresIn: '24h',
     });
   };
 

@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "archive": "git archive -o ../groupomania.zip HEAD"
+  }
+}

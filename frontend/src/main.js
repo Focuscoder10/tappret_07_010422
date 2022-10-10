@@ -1,14 +1,15 @@
 import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
+import App from '@/App.vue';
+import router from '@/router';
 import VueMeta from 'vue-meta';
 
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@fontsource/lato';
-import store from './store';
+import store from '@/store';
 
 Vue.config.productionTip = false;
 
+// Gestionnaire de titre dynamique
 Vue.use(VueMeta);
 
 new Vue({
