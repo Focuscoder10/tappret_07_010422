@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "start": "npx nodemon server",
-    "seed": "npx sequelize-cli db:seed:undo && npx sequelize-cli db:seed:all"
+    "reset": "npx sequelize-cli db:seed:undo && npx sequelize-cli db:seed --seed 20220908173622-init.js",
+    "seed": "npx sequelize-cli db:seed --seed 20220908173623-all.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

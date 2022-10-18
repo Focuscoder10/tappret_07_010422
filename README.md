@@ -16,8 +16,14 @@ cp .env.example .env
 npm i
 ```
 ### In .env
-Fill in the connection information to the database
+Fill in the connection information to the database\
 Generate a secret key to secure the JWT
+
+### Init database
+Warning: this command resets your database
+```
+npm run reset
+```
 ### Then start the server
 ```
 npm run start
@@ -27,7 +33,6 @@ If you need to fill the database with dummy data
 ```
 npm run seed
 ```
-Warning: this command resets your database
 ## Setup frontend
 ```
 cd frontend

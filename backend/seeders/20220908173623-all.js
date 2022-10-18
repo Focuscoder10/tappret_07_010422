@@ -24,30 +24,8 @@ module.exports = {
   async up(queryInterface) {
     await (async () => {
       const hash = await bcrypt.hash('password', 10);
-      const past = faker.date.past().toDateTime();
-      const users = [
-        {
-          firstname: 'Groupomania',
-          lastname: 'Moderator',
-          email: 'moderator@groupomania.test',
-          password: hash,
-          avatar: faker.image.avatar(),
-          isModerator: true,
-          createdAt: past,
-          updatedAt: past,
-        },
-        {
-          firstname: 'Groupomania',
-          lastname: 'User',
-          email: 'user@groupomania.test',
-          password: hash,
-          avatar: faker.image.avatar(),
-          isModerator: false,
-          createdAt: past,
-          updatedAt: past,
-        },
-      ];
-      for (let i = 0; i < 98; i += 1) {
+      const users = [];
+      for (let i = 0; i < 100; i += 1) {
         const firstname = faker.name.firstName();
         const lastname = faker.name.lastName();
         const date = faker.date.past().toDateTime();
